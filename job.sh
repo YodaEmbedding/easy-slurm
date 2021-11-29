@@ -34,7 +34,7 @@ teardown() {
 
 handle_interrupt() {
   local PROG_PID="$(< "$SLURM_TMPDIR/prog.pid")"
-  kill -TERM $PROG_PID
+  kill -TERM "$PROG_PID"
   IS_INTERRUPTED=true
 }
 
@@ -76,11 +76,11 @@ save_results() {
 }
 
 finalize() {
-  if [ $IS_INTERRUPTED = true ]; then
+  if [ "$IS_INTERRUPTED" = true ]; then
     echo "continue" > "$JOB_DIR/status"
-    JOB_ID="$(sbatch
-      --job-name="$SLURM_JOB_NAME"
-      --output="$JOB_DIR/slurm_jobid%j_%x.out"
+    JOB_ID="$(sbatch \
+      --job-name="$SLURM_JOB_NAME" \
+      --output="$JOB_DIR/slurm_jobid%j_%x.out" \
       "$JOB_DIR/job.sh"
     )"
     echo "$JOB_ID" >> "$JOB_DIR/job_ids"
