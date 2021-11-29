@@ -77,7 +77,7 @@ run() {
 
 save_results() {
   cd "$SLURM_TMPDIR"
-  tar czf "$SLURM_TMPDIR/results/" results.tar.gz
+  tar czf results.tar.gz results
   mv results.tar.gz "$JOB_DIR/"
 }
 
