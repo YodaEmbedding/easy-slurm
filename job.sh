@@ -1,8 +1,14 @@
 #!/usr/bin/env bash
 
-#SBATCH ...
 #SBATCH --signal=B:USR1@120
 
+#SBATCH --account=def-ibajic
+#SBATCH --time=3:00:00
+#SBATCH --gres=gpu:1
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=1
+#SBATCH --cpus-per-task=6
+#SBATCH --mem=32000M
 
 JOB_DIR=
 DATASET_PATH=
