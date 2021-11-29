@@ -7,6 +7,9 @@
 JOB_DIR=
 DATASET_PATH=
 
+on_run="python main.py"
+on_continue="python main.py --continue"
+
 IS_INTERRUPTED=false
 
 presetup_continue() {
@@ -23,14 +26,6 @@ setup() {
   pip install --no-index -r requirements.txt
   pip install -e "$SLURM_TMPDIR/compressai"
 }
-
-# on_run() {
-#   python main.py
-# }
-#
-# on_continue() {
-#   python main.py --continue
-# }
 
 teardown() {
   cd "$SLURM_TMPDIR"
@@ -64,14 +59,12 @@ run() {
   cd "$SLURM_TMPDIR/src"
   trap handle_interrupt USR1
   if grep -q "new" "$JOB_DIR/status"; then
-    # on_run
-    # bash -c 'echo $$ > "$SLURM_TMPDIR/prog.pid"; exec python main.py'
-    python main.py &
+    cmd="$on_run"
   else
-    # on_continue
-    # bash -c 'echo $$ > "$SLURM_TMPDIR/prog.pid"; exec python main.py --continue'
-    python main.py --continue &
+    cmd="$on_continue"
   fi
+  # bash -c "echo $$ > '$SLURM_TMPDIR/prog.pid'; exec $cmd"
+  eval "$cmd &"
   echo $! > "$SLURM_TMPDIR/prog.pid"
   wait
 }
