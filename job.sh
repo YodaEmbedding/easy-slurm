@@ -62,6 +62,8 @@ extract_data() {
 }
 
 run() {
+  cd "$SLURM_TMPDIR"
+  mkdir results
   cd "$SLURM_TMPDIR/src"
   trap handle_interrupt USR1
   if grep -q "new" "$JOB_DIR/status"; then
