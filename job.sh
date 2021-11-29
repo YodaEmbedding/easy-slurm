@@ -14,6 +14,7 @@ presetup_continue() {
 }
 
 setup() {
+  cd "$SLURM_TMPDIR"
   git clone --depth 1 https://github.com/InterDigitalInc/CompressAI "$SLURM_TMPDIR/compressai"
   module load python/3.9
   virtualenv --no-download "$SLURM_TMPDIR/env"
@@ -32,6 +33,7 @@ setup() {
 # }
 
 teardown() {
+  cd "$SLURM_TMPDIR"
   mv "$SLURM_TMPDIR/src/logs" "$SLURM_TMPDIR/results/"
 }
 
@@ -41,54 +43,62 @@ handle_interrupt() {
   IS_INTERRUPTED=true
 }
 
-
-cd "$SLURM_TMPDIR"
-mkdir datasets
-cd datasets
-tar xf "$DATASET_PATH"
-
-cd "$SLURM_TMPDIR"
-tar xf "$JOB_DIR/assets.tar.gz"
-tar xf "$JOB_DIR/src.tar.gz"
-
-if grep -q "continue" "$JOB_DIR/status"; then
-  tar xf "$JOB_DIR/results.tar.gz"
+extract_data() {
   cd "$SLURM_TMPDIR"
-  presetup_continue
-fi
+  mkdir datasets
+  cd datasets
+  tar xf "$DATASET_PATH"
 
-cd "$SLURM_TMPDIR"
+  cd "$SLURM_TMPDIR"
+  tar xf "$JOB_DIR/assets.tar.gz"
+  tar xf "$JOB_DIR/src.tar.gz"
+
+  if grep -q "continue" "$JOB_DIR/status"; then
+    tar xf "$JOB_DIR/results.tar.gz"
+    cd "$SLURM_TMPDIR"
+    presetup_continue
+  fi
+}
+
+run() {
+  cd "$SLURM_TMPDIR/src"
+  trap handle_interrupt USR1
+  if grep -q "new" "$JOB_DIR/status"; then
+    # on_run
+    # bash -c 'echo $$ > "$SLURM_TMPDIR/prog.pid"; exec python main.py'
+    python main.py &
+  else
+    # on_continue
+    # bash -c 'echo $$ > "$SLURM_TMPDIR/prog.pid"; exec python main.py --continue'
+    python main.py --continue &
+  fi
+  echo $! > "$SLURM_TMPDIR/prog.pid"
+  wait
+}
+
+save_results() {
+  cd "$SLURM_TMPDIR"
+  tar czf "$SLURM_TMPDIR/results/" results.tar.gz
+  mv results.tar.gz "$JOB_DIR/"
+}
+
+finalize() {
+  if [ $IS_INTERRUPTED = true ]; then
+    echo "continue" > "$JOB_DIR/status"
+    JOB_ID="$(sbatch
+      --job-name="$SLURM_JOB_NAME"
+      --output="$JOB_DIR/slurm_jobid%j_%x.out"
+      "$JOB_DIR/job.sh"
+    )"
+    echo "$JOB_ID" >> "$JOB_DIR/job_ids"
+  else
+    echo "completed" > "$JOB_DIR/status"
+  fi
+}
+
+extract_data
 setup
-
-cd "$SLURM_TMPDIR/src"
-trap handle_interrupt USR1
-if grep -q "new" "$JOB_DIR/status"; then
-  # on_run
-  # bash -c 'echo $$ > "$SLURM_TMPDIR/prog.pid"; exec python main.py'
-  python main.py &
-else
-  # on_continue
-  # bash -c 'echo $$ > "$SLURM_TMPDIR/prog.pid"; exec python main.py --continue'
-  python main.py --continue &
-fi
-echo $! > "$SLURM_TMPDIR/prog.pid"
-wait
-
-cd "$SLURM_TMPDIR"
+run
 teardown
-
-cd "$SLURM_TMPDIR"
-tar czf "$SLURM_TMPDIR/results/" results.tar.gz
-mv results.tar.gz "$JOB_DIR/"
-
-if [ $IS_INTERRUPTED = true ]; then
-  echo "continue" > "$JOB_DIR/status"
-  JOB_ID="$(sbatch
-    --job-name="$SLURM_JOB_NAME"
-    --output="$JOB_DIR/slurm_jobid%j_%x.out"
-    "$JOB_DIR/job.sh"
-  )"
-  echo "$JOB_ID" >> "$JOB_DIR/job_ids"
-else
-  echo "completed" > "$JOB_DIR/status"
-fi
+save_results
+finalize
