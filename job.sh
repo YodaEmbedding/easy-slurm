@@ -18,10 +18,6 @@ on_continue="python main.py --continue"
 
 IS_INTERRUPTED=false
 
-presetup_continue() {
-  mv results/logs src/
-}
-
 setup() {
   cd "$SLURM_TMPDIR"
   git clone --depth 1 https://github.com/InterDigitalInc/CompressAI "$SLURM_TMPDIR/compressai"
@@ -31,6 +27,12 @@ setup() {
   pip install --no-index --upgrade pip
   pip install --no-index -r requirements.txt
   pip install -e "$SLURM_TMPDIR/compressai"
+}
+
+setup_continue() {
+  setup
+  cd "$SLURM_TMPDIR"
+  mv results/logs src/
 }
 
 teardown() {
@@ -53,11 +55,15 @@ extract_data() {
   cd "$SLURM_TMPDIR"
   tar xf "$JOB_DIR/assets.tar.gz"
   tar xf "$JOB_DIR/src.tar.gz"
+}
 
-  if grep -q "continue" "$JOB_DIR/status"; then
+run_setup() {
+  cd "$SLURM_TMPDIR"
+  if grep -q "new" "$JOB_DIR/status"; then
+    setup
+  else
     tar xf "$JOB_DIR/results.tar.gz"
-    cd "$SLURM_TMPDIR"
-    presetup_continue
+    setup_continue
   fi
 }
 
@@ -98,7 +104,7 @@ finalize() {
 }
 
 extract_data
-setup
+run_setup
 run
 teardown
 save_results
