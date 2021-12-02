@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
-#SBATCH --signal=B:USR1@120
-
+#SBATCH --job-name=example
 #SBATCH --account=def-ibajic
 #SBATCH --time=3:00:00
 #SBATCH --gres=gpu:1
@@ -9,6 +8,7 @@
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=6
 #SBATCH --mem=32000M
+#SBATCH --signal=B:USR1@120
 
 JOB_DIR=
 DATASET_PATH=
@@ -30,6 +30,7 @@ setup() {
 }
 
 setup_continue() {
+  cd "$SLURM_TMPDIR"
   setup
   cd "$SLURM_TMPDIR"
   mv results/logs src/
