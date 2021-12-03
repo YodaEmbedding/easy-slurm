@@ -7,7 +7,7 @@ from textwrap import dedent, indent
 from typing import Any
 
 
-JOB_SCRIPT_TEMPLATE = """
+JOB_SCRIPT_TEMPLATE = r"""
 #!/usr/bin/env bash
 
 {{sbatch_options_str}}
@@ -86,7 +86,8 @@ save_results() {
 finalize() {
   if [ "$IS_INTERRUPTED" = true ]; then
     echo "continue" > "$JOB_DIR/status"
-    JOB_ID="$(sbatch "$JOB_DIR/job.sh")"
+    local RESULT="$(sbatch "$JOB_DIR/job.sh")"
+    JOB_ID="$(sed 's/^Submitted batch job \([0-9]\+\)$/\1/' <<< "$RESULT")"
     echo "$JOB_ID" >> "$JOB_DIR/job_ids"
   else
     echo "completed" > "$JOB_DIR/status"

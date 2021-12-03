@@ -93,11 +93,12 @@ save_results() {
 finalize() {
   if [ "$IS_INTERRUPTED" = true ]; then
     echo "continue" > "$JOB_DIR/status"
-    JOB_ID="$(sbatch \
+    local RESULT="$(sbatch \
       --job-name="$SLURM_JOB_NAME" \
       --output="$JOB_DIR/slurm_jobid%j_%x.out" \
       "$JOB_DIR/job.sh"
     )"
+    JOB_ID="$(sed 's/^Submitted batch job \([0-9]\+\)$/\1/' <<< "$RESULT")"
     echo "$JOB_ID" >> "$JOB_DIR/job_ids"
   else
     echo "completed" > "$JOB_DIR/status"
