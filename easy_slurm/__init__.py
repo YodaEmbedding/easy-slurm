@@ -180,7 +180,8 @@ def submit_job(
 
     now = datetime.now()
     datestamp = now.strftime("%Y-%m-%d_%H-%M-%S_%f")[:-3]
-    job_dir = f"{job_root}/{datestamp}"
+    job_name = sbatch_options.get("job-name", "untitled")
+    job_dir = f"{job_root}/{datestamp}_{job_name}"
     os.makedirs(job_dir, exist_ok=True)
 
     _create_tar_dir(src, f"{job_dir}/src.tar.gz", "src")
