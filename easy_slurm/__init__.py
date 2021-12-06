@@ -59,11 +59,10 @@ run_setup() {
     tar xf "$JOB_DIR/results.tar.gz"
     setup_continue
   fi
+  mkdir -p "$SLURM_TMPDIR/results"
 }
 
 run() {
-  cd "$SLURM_TMPDIR"
-  mkdir results
   cd "$SLURM_TMPDIR/src"
   trap handle_interrupt USR1
   if grep -q "new" "$JOB_DIR/status"; then
