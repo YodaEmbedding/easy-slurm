@@ -53,13 +53,11 @@ handle_interrupt() {
 
 extract_data() {
   begin_func "extract_data" "$SLURM_TMPDIR"
-  mkdir datasets
-  cd datasets || exit
-  tar xf "$DATASET_PATH"
-
-  cd "$SLURM_TMPDIR" || exit
   tar xf "$JOB_DIR/assets.tar.gz"
   tar xf "$JOB_DIR/src.tar.gz"
+  mkdir -p "$SLURM_TMPDIR/datasets"
+  cd "$SLURM_TMPDIR/datasets" || exit
+  tar xf "$DATASET_PATH"
 }
 
 run_setup() {
