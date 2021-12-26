@@ -8,7 +8,7 @@ from typing import Any
 
 
 JOB_SCRIPT_TEMPLATE = r"""
-#!/usr/bin/env bash
+#!/bin/bash -v
 
 {{sbatch_options_str}}
 
@@ -19,29 +19,40 @@ on_continue="{{on_continue}}"
 
 IS_INTERRUPTED=false
 
+begin_func() {
+  local func_name="$1"
+  local start_dir="$2"
+  echo ">>> Call $func_name at $(date)"
+  echo "Previous directory: $PWD"
+  echo "Changing directory to: $start_dir"
+  cd "$start_dir"
+  echo "Changed directory to: $PWD"
+}
+
 setup() {
-  cd "$SLURM_TMPDIR"
+  begin_func "setup" "$SLURM_TMPDIR"
 {{setup}}
 }
 
 setup_continue() {
-  cd "$SLURM_TMPDIR"
+  begin_func "setup_continue" "$SLURM_TMPDIR"
 {{setup_continue}}
 }
 
 teardown() {
-  cd "$SLURM_TMPDIR"
+  begin_func "teardown" "$SLURM_TMPDIR"
 {{teardown}}
 }
 
 handle_interrupt() {
+  echo ">>> Call handle_interrupt at $(date)"
   local PROG_PID="$(< "$SLURM_TMPDIR/prog.pid")"
   kill -TERM "$PROG_PID"
   IS_INTERRUPTED=true
 }
 
 extract_data() {
-  cd "$SLURM_TMPDIR"
+  begin_func "extract_data" "$SLURM_TMPDIR"
   mkdir datasets
   cd datasets
   tar xf "$DATASET_PATH"
@@ -52,7 +63,7 @@ extract_data() {
 }
 
 run_setup() {
-  cd "$SLURM_TMPDIR"
+  begin_func "run_setup" "$SLURM_TMPDIR"
   if grep -q "new" "$JOB_DIR/status"; then
     setup
   else
@@ -63,7 +74,7 @@ run_setup() {
 }
 
 run() {
-  cd "$SLURM_TMPDIR/src"
+  begin_func "run" "$SLURM_TMPDIR/src"
   trap handle_interrupt USR1
   if grep -q "new" "$JOB_DIR/status"; then
     cmd="$on_run"
@@ -77,12 +88,13 @@ run() {
 }
 
 save_results() {
-  cd "$SLURM_TMPDIR"
+  begin_func "save_results" "$SLURM_TMPDIR"
   tar czf results.tar.gz results
   mv results.tar.gz "$JOB_DIR/"
 }
 
 finalize() {
+  begin_func "finalize" "$SLURM_TMPDIR"
   if [ "$IS_INTERRUPTED" = true ]; then
     echo "continue" > "$JOB_DIR/status"
     local RESULT="$(sbatch "$JOB_DIR/job.sh")"
