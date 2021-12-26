@@ -1,3 +1,41 @@
+"""
+# Easy Slurm
+
+Helps users submit robust jobs to slurm using a python/bash interface.
+
+ - Freezes source code and assets by copying to separate `JOB_DIR`.
+ - Copies data to local filesystem of compute node (`SLURM_TMPDIR`)
+   for performance.
+ - Exposes hooks for custom bash code: `setup`, `setup_continue`,
+   `on_run`, `on_continue`, and `teardown`.
+ - Interrupts running worker process before job time runs out.
+ - Auto-saves results back to `JOB_DIR`.
+ - On continuing an incomplete run, extracts intermediate saved results
+   and runs `*_continue` hooks.
+
+## Details
+
+### status
+
+`status` represents a state machine.
+
+On a given run, it goes through the steps:
+
+```
+new/incomplete
+started
+running
+[interrupting]
+finalizing
+completed/incomplete
+```
+
+If the current run successfully completes, `status` ends with
+`completed`. Otherwise, if it is interrupted, `status` includes
+`interrupting` and ends with `incomplete`.
+"""
+
+
 import os
 import re
 import stat
