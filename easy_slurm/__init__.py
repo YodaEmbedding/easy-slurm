@@ -18,6 +18,16 @@ on_run="{{on_run}}"
 on_continue="{{on_continue}}"
 
 IS_INTERRUPTED=false
+IS_FIRST_RUN=false
+
+if grep -q "new" "$JOB_DIR/status"; then
+  IS_FIRST_RUN=true
+elif grep -q "incomplete" "$JOB_DIR/status"; then
+  IS_FIRST_RUN=false
+else
+  echo "Status not new or incomplete."
+  exit 1
+fi
 
 begin_func() {
   local func_name="$1"
@@ -62,7 +72,7 @@ extract_data() {
 
 run_setup() {
   begin_func "run_setup" "$SLURM_TMPDIR"
-  if grep -q "new" "$JOB_DIR/status"; then
+  if [ "$IS_FIRST_RUN" = true ]; then
     setup
   else
     tar xf "$JOB_DIR/results.tar.gz"
@@ -74,7 +84,7 @@ run_setup() {
 run() {
   begin_func "run" "$SLURM_TMPDIR/src"
   trap handle_interrupt USR1
-  if grep -q "new" "$JOB_DIR/status"; then
+  if [ "$IS_FIRST_RUN" = true ]; then
     cmd="$on_run"
   else
     cmd="$on_continue"
@@ -94,10 +104,10 @@ save_results() {
 finalize() {
   begin_func "finalize" "$SLURM_TMPDIR"
   if [ "$IS_INTERRUPTED" = true ]; then
-    echo "continue" > "$JOB_DIR/status"
     local RESULT="$(sbatch "$JOB_DIR/job.sh")"
     JOB_ID="$(sed 's/^Submitted batch job \([0-9]\+\)$/\1/' <<< "$RESULT")"
     echo "$JOB_ID" >> "$JOB_DIR/job_ids"
+    echo "incomplete" > "$JOB_DIR/status"
   else
     echo "completed" > "$JOB_DIR/status"
   fi
