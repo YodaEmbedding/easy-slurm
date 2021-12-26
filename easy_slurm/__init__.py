@@ -55,6 +55,7 @@ teardown() {
 }
 
 handle_interrupt() {
+  echo "interrupting" > "$JOB_DIR/status"
   echo ">>> Call handle_interrupt at $(date)"
   local PROG_PID="$(< "$SLURM_TMPDIR/prog.pid")"
   kill -TERM "$PROG_PID"
@@ -113,9 +114,12 @@ finalize() {
   fi
 }
 
+echo "started" > "$JOB_DIR/status"
 extract_data
 run_setup
+echo "running" > "$JOB_DIR/status"
 run
+echo "finalizing" > "$JOB_DIR/status"
 teardown
 save_results
 finalize
