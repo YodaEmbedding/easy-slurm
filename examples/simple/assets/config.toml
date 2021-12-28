@@ -1,0 +1,8 @@
+dataset = "../datasets/data"
+epochs = 30
+
+# Also may include other hyperparameters such as:
+#
+# learning-rate = 1e-2
+# batch-size = 8
+# num-workers = 4
