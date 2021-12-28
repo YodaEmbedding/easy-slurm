@@ -141,7 +141,7 @@ save_results() {
 }
 
 finalize() {
-  begin_func "finalize" "$SLURM_TMPDIR"
+  begin_func "finalize" "$JOB_DIR"
   if [ "$IS_INTERRUPTED" = true ]; then
     local RESULT="$(sbatch "$JOB_DIR/job.sh")"
     JOB_ID="$(sed 's/^Submitted batch job \([0-9]\+\)$/\1/' <<< "$RESULT")"
