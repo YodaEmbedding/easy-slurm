@@ -197,17 +197,25 @@ def submit_job(
 
     Creates job directory with frozen assets and submits job to slurm.
     """
+    job_name = sbatch_options.get("job-name", "untitled")
+
     job_dir = create_job_dir(
+        job_name=job_name,
         job_root=job_root,
         src=src,
         assets=assets,
-        dataset=dataset,
+    )
+
+    create_job_script(
+        filename=f"{job_dir}/job.sh",
+        sbatch_options=sbatch_options,
         on_run=on_run,
         on_continue=on_continue,
         setup=setup,
         setup_continue=setup_continue,
         teardown=teardown,
-        sbatch_options=sbatch_options,
+        job_dir=job_dir,
+        dataset=dataset,
     )
 
     result = subprocess.run(
@@ -233,7 +241,7 @@ def create_job_script(
     setup_continue: str,
     teardown: str,
     job_dir: str,
-    dataset_path: str,
+    dataset: str,
 ):
     """Creates job script file at given path."""
     job_script_str = create_job_script_source(
@@ -244,7 +252,7 @@ def create_job_script(
         setup_continue=setup_continue,
         teardown=teardown,
         job_dir=job_dir,
-        dataset_path=dataset_path,
+        dataset=dataset,
     )
 
     with open(filename, "w") as f:
@@ -262,12 +270,15 @@ def create_job_script_source(
     setup_continue: str,
     teardown: str,
     job_dir: str,
-    dataset_path: str,
+    dataset: str,
 ) -> str:
     """Returns source for job script."""
+    job_dir = _expand_path(job_dir)
+    dataset = _expand_path(dataset)
+
     vars_str = VARS_TEMPLATE.format(
         job_dir=job_dir,
-        dataset_path=dataset_path,
+        dataset_path=dataset,
     )
 
     fix_indent = lambda x: indent(dedent(x.strip("\n")), "  ").rstrip("\n")
@@ -296,53 +307,36 @@ def create_job_script_source(
 
 
 def create_job_dir(
+    job_name: str,
     job_root: str,
     src: str,
     assets: str,
-    dataset: str,
-    on_run: str,
-    on_continue: str,
-    setup: str,
-    setup_continue: str,
-    teardown: str,
-    sbatch_options: dict[str, Any],
 ) -> str:
     """Creates job directory and freezes all necessary files.
 
     Returns:
         Path to the newly created job directory.
     """
-    fix_path = lambda x: os.path.abspath(os.path.expandvars(x))
-    job_root = fix_path(job_root)
-    src = fix_path(src)
-    assets = fix_path(assets)
-    dataset = fix_path(dataset)
+    job_root = _expand_path(job_root)
+    src = _expand_path(src)
+    assets = _expand_path(assets)
 
     now = datetime.now()
     datestamp = now.strftime("%Y-%m-%d_%H-%M-%S_%f")[:-3]
-    job_name = sbatch_options.get("job-name", "untitled")
     job_dir = f"{job_root}/{datestamp}_{job_name}"
     os.makedirs(job_dir, exist_ok=True)
 
     _create_tar_dir(src, f"{job_dir}/src.tar.gz", "src")
     _create_tar_dir(assets, f"{job_dir}/assets.tar.gz", "assets")
 
-    create_job_script(
-        filename=f"{job_dir}/job.sh",
-        sbatch_options=sbatch_options,
-        on_run=on_run,
-        on_continue=on_continue,
-        setup=setup,
-        setup_continue=setup_continue,
-        teardown=teardown,
-        job_dir=job_dir,
-        dataset_path=dataset,
-    )
-
     with open(f"{job_dir}/status", "w") as f:
         print("new", file=f)
 
     return job_dir
+
+
+def _expand_path(path: str) -> str:
+    return os.path.abspath(os.path.expandvars(path))
 
 
 def _create_tar_dir(src, dst, root_name):
