@@ -181,7 +181,51 @@ DATASET_PATH={dataset_path}
 VARS_TEMPLATE = VARS_TEMPLATE.strip("\n")
 
 
+def submit_job(
+    job_root: str,
+    src: str,
+    assets: str,
+    dataset: str,
+    on_run: str,
+    on_continue: str,
+    setup: str,
+    setup_continue: str,
+    teardown: str,
+    sbatch_options: dict[str, Any],
+):
+    """Submits job.
+
+    Creates job directory with frozen assets and submits job to slurm.
+    """
+    job_dir = create_job_dir(
+        job_root=job_root,
+        src=src,
+        assets=assets,
+        dataset=dataset,
+        on_run=on_run,
+        on_continue=on_continue,
+        setup=setup,
+        setup_continue=setup_continue,
+        teardown=teardown,
+        sbatch_options=sbatch_options,
+    )
+
+    result = subprocess.run(
+        ["sbatch", f"{job_dir}/job.sh"],
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+
+    m = re.match(r"^Submitted batch job (\d+)$", result.stdout)
+    job_id = int(m.group(1))
+
+    with open(f"{job_dir}/job_ids", "w") as f:
+        print(job_id, file=f)
+
+
 def create_job_script(
+    filename: str,
     sbatch_options: dict[str, Any],
     on_run: str,
     on_continue: str,
@@ -191,6 +235,36 @@ def create_job_script(
     job_dir: str,
     dataset_path: str,
 ):
+    """Creates job script file at given path."""
+    job_script_str = create_job_script_source(
+        sbatch_options=sbatch_options,
+        on_run=on_run,
+        on_continue=on_continue,
+        setup=setup,
+        setup_continue=setup_continue,
+        teardown=teardown,
+        job_dir=job_dir,
+        dataset_path=dataset_path,
+    )
+
+    with open(filename, "w") as f:
+        print(job_script_str, file=f)
+
+    st = os.stat(filename)
+    os.chmod(filename, st.st_mode | stat.S_IEXEC)
+
+
+def create_job_script_source(
+    sbatch_options: dict[str, Any],
+    on_run: str,
+    on_continue: str,
+    setup: str,
+    setup_continue: str,
+    teardown: str,
+    job_dir: str,
+    dataset_path: str,
+) -> str:
+    """Returns source for job script."""
     vars_str = VARS_TEMPLATE.format(
         job_dir=job_dir,
         dataset_path=dataset_path,
@@ -221,7 +295,7 @@ def create_job_script(
     )
 
 
-def submit_job(
+def create_job_dir(
     job_root: str,
     src: str,
     assets: str,
@@ -232,7 +306,12 @@ def submit_job(
     setup_continue: str,
     teardown: str,
     sbatch_options: dict[str, Any],
-):
+) -> str:
+    """Creates job directory and freezes all necessary files.
+
+    Returns:
+        Path to the newly created job directory.
+    """
     fix_path = lambda x: os.path.abspath(os.path.expandvars(x))
     job_root = fix_path(job_root)
     src = fix_path(src)
@@ -248,7 +327,8 @@ def submit_job(
     _create_tar_dir(src, f"{job_dir}/src.tar.gz", "src")
     _create_tar_dir(assets, f"{job_dir}/assets.tar.gz", "assets")
 
-    job_script_str = create_job_script(
+    create_job_script(
+        filename=f"{job_dir}/job.sh",
         sbatch_options=sbatch_options,
         on_run=on_run,
         on_continue=on_continue,
@@ -259,27 +339,10 @@ def submit_job(
         dataset_path=dataset,
     )
 
-    with open(f"{job_dir}/job.sh", "w") as f:
-        print(job_script_str, file=f)
-
-    st = os.stat(f"{job_dir}/job.sh")
-    os.chmod(f"{job_dir}/job.sh", st.st_mode | stat.S_IEXEC)
-
     with open(f"{job_dir}/status", "w") as f:
         print("new", file=f)
 
-    result = subprocess.run(
-        ["sbatch", f"{job_dir}/job.sh"],
-        check=True,
-        capture_output=True,
-        text=True,
-    )
-
-    m = re.match(r"^Submitted batch job (\d+)$", result.stdout)
-    job_id = int(m.group(1))
-
-    with open(f"{job_dir}/job_ids", "w") as f:
-        print(job_id, file=f)
+    return job_dir
 
 
 def _create_tar_dir(src, dst, root_name):
