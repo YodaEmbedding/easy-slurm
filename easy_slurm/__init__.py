@@ -58,15 +58,6 @@ on_continue="{{on_continue}}"
 IS_INTERRUPTED=false
 IS_FIRST_RUN=false
 
-if grep -q "new" "$JOB_DIR/status"; then
-  IS_FIRST_RUN=true
-elif grep -q "incomplete" "$JOB_DIR/status"; then
-  IS_FIRST_RUN=false
-else
-  echo "Status not new or incomplete."
-  exit 1
-fi
-
 begin_func() {
   local func_name="$1"
   local start_dir="$2"
@@ -98,6 +89,17 @@ handle_interrupt() {
   local PROG_PID="$(< "$SLURM_TMPDIR/prog.pid")"
   kill -TERM "$PROG_PID"
   IS_INTERRUPTED=true
+}
+
+init_vars() {
+  if grep -q "new" "$JOB_DIR/status"; then
+    IS_FIRST_RUN=true
+  elif grep -q "incomplete" "$JOB_DIR/status"; then
+    IS_FIRST_RUN=false
+  else
+    echo "Status not new or incomplete."
+    exit 1
+  fi
 }
 
 extract_data() {
@@ -154,6 +156,7 @@ finish() {
 }
 
 initialize() {
+  init_vars
   echo "initializing" > "$JOB_DIR/status"
   extract_data
   run_setup
