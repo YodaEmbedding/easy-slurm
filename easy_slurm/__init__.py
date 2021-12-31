@@ -25,7 +25,7 @@ begin_func() {
   echo ">>> Call $func_name at $(date)"
   echo "Previous directory: $PWD"
   echo "Changing directory to: $start_dir"
-  cd "$start_dir" || exit
+  cd "$start_dir" || exit 1
   echo "Changed directory to: $PWD"
 }
 
@@ -56,7 +56,7 @@ extract_data() {
   tar xf "$JOB_DIR/assets.tar.gz"
   tar xf "$JOB_DIR/src.tar.gz"
   mkdir -p "$SLURM_TMPDIR/datasets"
-  cd "$SLURM_TMPDIR/datasets" || exit
+  cd "$SLURM_TMPDIR/datasets" || exit 1
   tar xf "$DATASET_PATH"
 }
 
