@@ -23,7 +23,7 @@ On a given run, it goes through the steps:
 
 ```
 new/incomplete
-started
+initializing
 running
 [interrupting]
 finalizing
@@ -121,6 +121,7 @@ run_setup() {
 }
 
 run() {
+  echo "running" > "$JOB_DIR/status"
   begin_func "run" "$SLURM_TMPDIR/src"
   trap handle_interrupt USR1
   if [ "$IS_FIRST_RUN" = true ]; then
@@ -140,8 +141,8 @@ save_results() {
   mv results.tar.gz "$JOB_DIR/"
 }
 
-finalize() {
-  begin_func "finalize" "$JOB_DIR"
+finish() {
+  begin_func "finish" "$JOB_DIR"
   if [ "$IS_INTERRUPTED" = true ]; then
     local RESULT="$(sbatch "$JOB_DIR/job.sh")"
     JOB_ID="$(sed 's/^Submitted batch job \([0-9]\+\)$/\1/' <<< "$RESULT")"
@@ -152,14 +153,21 @@ finalize() {
   fi
 }
 
-echo "started" > "$JOB_DIR/status"
-extract_data
-run_setup
-echo "running" > "$JOB_DIR/status"
+initialize() {
+  echo "initializing" > "$JOB_DIR/status"
+  extract_data
+  run_setup
+}
+
+finalize() {
+  echo "finalizing" > "$JOB_DIR/status"
+  teardown
+  save_results
+  finish
+}
+
+initialize
 run
-echo "finalizing" > "$JOB_DIR/status"
-teardown
-save_results
 finalize
 """
 
