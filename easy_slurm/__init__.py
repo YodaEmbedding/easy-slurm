@@ -221,6 +221,12 @@ DATASET_PATH={dataset_path}
 
 VARS_TEMPLATE = VARS_TEMPLATE.strip("\n")
 
+JOB_INTERACTIVE_TEMPLATE = """
+#!/bin/bash -v
+
+source {job_path} --interactive
+"""
+
 
 def submit_job(
     job_root: str,
@@ -233,6 +239,7 @@ def submit_job(
     setup_continue: str,
     teardown: str,
     sbatch_options: dict[str, Any],
+    interactive: bool = False,
 ):
     """Submits job.
 
@@ -258,20 +265,35 @@ def submit_job(
         dataset=dataset,
     )
 
-    _write_script(f"{job_dir}/job.sh", job_script_str)
+    job_path = f"{job_dir}/job.sh"
+    _write_script(job_path, job_script_str)
 
-    result = subprocess.run(
-        ["sbatch", f"{job_dir}/job.sh"],
-        check=True,
-        capture_output=True,
-        text=True,
-    )
+    if interactive:
+        job_interactive_path = f"{job_dir}/job_interactive.sh"
 
-    m = re.match(r"^Submitted batch job (\d+)$", result.stdout)
-    job_id = int(m.group(1))
+        _write_script(
+            job_interactive_path,
+            JOB_INTERACTIVE_TEMPLATE.format(job_path=job_path),
+        )
 
-    with open(f"{job_dir}/job_ids", "w") as f:
-        print(job_id, file=f)
+        subprocess.run(
+            ["srun", "--pty", "bash", "--init-file", job_interactive_path],
+            check=True,
+            text=True,
+        )
+    else:
+        result = subprocess.run(
+            ["sbatch", f"{job_dir}/job.sh"],
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+
+        m = re.match(r"^Submitted batch job (\d+)$", result.stdout)
+        job_id = int(m.group(1))
+
+        with open(f"{job_dir}/job_ids", "w") as f:
+            print(job_id, file=f)
 
 
 def create_job_script_source(
