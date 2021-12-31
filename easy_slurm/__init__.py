@@ -57,6 +57,7 @@ on_continue="{{on_continue}}"
 
 IS_INTERRUPTED=false
 IS_FIRST_RUN=false
+IS_INTERACTIVE=false
 
 begin_func() {
   local func_name="$1"
@@ -89,6 +90,25 @@ handle_interrupt() {
   local PROG_PID="$(< "$SLURM_TMPDIR/prog.pid")"
   kill -TERM "$PROG_PID"
   IS_INTERRUPTED=true
+}
+
+parse_args() {
+  for arg in "$@"; do
+    case $arg in
+      -i|--interactive)
+        IS_INTERACTIVE=true
+        shift
+        ;;
+      -*|--*)
+        echo "Unknown argument $arg"
+        exit 1
+        ;;
+      *)
+        echo "No positional arguments accepted"
+        exit 1
+        ;;
+    esac
+  done
 }
 
 init_vars() {
@@ -169,9 +189,19 @@ finalize() {
   finish
 }
 
-initialize
-run
-finalize
+main() {
+  parse_args "$@"
+  initialize
+  if [ "$IS_INTERACTIVE" = true ]; then
+    echo "interacting" > "$JOB_DIR/status"
+    trap finalize EXIT
+  else
+    run
+    finalize
+  fi
+}
+
+main "$@"
 """
 
 JOB_SCRIPT_TEMPLATE = (
