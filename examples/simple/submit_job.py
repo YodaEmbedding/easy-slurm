@@ -1,7 +1,6 @@
-import easy_slurm as ezs
+import easy_slurm
 
-
-ezs.submit_job(
+easy_slurm.submit_job(
     job_root="$HOME/.local/share/easy_slurm/example-simple",
     src="./src",
     assets="./assets",
