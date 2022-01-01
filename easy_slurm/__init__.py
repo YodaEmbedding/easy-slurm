@@ -217,8 +217,7 @@ def submit_job(
         assets=assets,
     )
 
-    create_job_script(
-        filename=f"{job_dir}/job.sh",
+    job_script_str = create_job_script_source(
         sbatch_options=sbatch_options,
         on_run=on_run,
         on_continue=on_continue,
@@ -228,6 +227,8 @@ def submit_job(
         job_dir=job_dir,
         dataset=dataset,
     )
+
+    _write_script(f"{job_dir}/job.sh", job_script_str)
 
     result = subprocess.run(
         ["sbatch", f"{job_dir}/job.sh"],
@@ -241,36 +242,6 @@ def submit_job(
 
     with open(f"{job_dir}/job_ids", "w") as f:
         print(job_id, file=f)
-
-
-def create_job_script(
-    filename: str,
-    sbatch_options: dict[str, Any],
-    on_run: str,
-    on_continue: str,
-    setup: str,
-    setup_continue: str,
-    teardown: str,
-    job_dir: str,
-    dataset: str,
-):
-    """Creates job script file at given path."""
-    job_script_str = create_job_script_source(
-        sbatch_options=sbatch_options,
-        on_run=on_run,
-        on_continue=on_continue,
-        setup=setup,
-        setup_continue=setup_continue,
-        teardown=teardown,
-        job_dir=job_dir,
-        dataset=dataset,
-    )
-
-    with open(filename, "w") as f:
-        print(job_script_str, file=f)
-
-    st = os.stat(filename)
-    os.chmod(filename, st.st_mode | stat.S_IEXEC)
 
 
 def create_job_script_source(
@@ -356,3 +327,11 @@ def _create_tar_dir(src, dst, root_name):
         ["tar", "czf", dst, "-C", src, ".", "--transform", transform],
         check=True,
     )
+
+
+def _write_script(filename: str, text: str):
+    with open(filename, "w") as f:
+        print(text, file=f)
+
+    st = os.stat(filename)
+    os.chmod(filename, st.st_mode | stat.S_IEXEC)
