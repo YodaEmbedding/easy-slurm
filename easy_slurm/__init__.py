@@ -106,7 +106,7 @@ def submit_job(
         )
     else:
         result = subprocess.run(
-            ["sbatch", f"{job_dir}/job.sh"],
+            ["sbatch", job_path],
             check=True,
             capture_output=True,
             text=True,
