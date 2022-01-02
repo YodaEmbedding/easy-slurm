@@ -20,15 +20,14 @@ with open(os.path.join(_dir_path, "job.sh")) as _f:
 
 JOB_SCRIPT_TEMPLATE = _format_template(JOB_SCRIPT_TEMPLATE)
 
+with open(os.path.join(_dir_path, "job_interactive.sh")) as _f:
+    JOB_INTERACTIVE_TEMPLATE = _f.read()
+
+JOB_INTERACTIVE_TEMPLATE = _format_template(JOB_INTERACTIVE_TEMPLATE)
+
 VARS_TEMPLATE = r"""
 JOB_DIR={job_dir}
 DATASET_PATH={dataset_path}
 """
 
 VARS_TEMPLATE = VARS_TEMPLATE.strip("\n")
-
-JOB_INTERACTIVE_TEMPLATE = """
-#!/bin/bash -v
-
-source {job_path} --interactive
-"""

@@ -91,14 +91,17 @@ def submit_job(
     job_path = f"{job_dir}/job.sh"
     _write_script(job_path, job_script_str)
 
+    job_interactive_script_str = create_job_interactive_script_source(
+        sbatch_options=sbatch_options,
+        job_path=job_path,
+        job_dir=job_dir,
+        cleanup_seconds=120,
+    )
+
+    job_interactive_path = f"{job_dir}/job_interactive.sh"
+    _write_script(job_interactive_path, job_interactive_script_str)
+
     if interactive:
-        job_interactive_path = f"{job_dir}/job_interactive.sh"
-
-        _write_script(
-            job_interactive_path,
-            JOB_INTERACTIVE_TEMPLATE.format(job_path=job_path),
-        )
-
         subprocess.run(
             ["srun", "--pty", "bash", "--init-file", job_interactive_path],
             check=True,
@@ -144,12 +147,8 @@ def create_job_script_source(
     teardown = fix_indent(teardown)
 
     cleanup_seconds = 120
-    sbatch_options = dict(sbatch_options)
-    sbatch_options["signal"] = f"B:USR1@{cleanup_seconds}"
-    sbatch_options["output"] = f"{job_dir}/slurm_jobid%j_%x.out"
-
-    sbatch_options_str = "\n".join(
-        f"#SBATCH --{k}={v}" for k, v in sbatch_options.items()
+    sbatch_options_str = _sbatch_options_to_str(
+        sbatch_options, job_dir, cleanup_seconds
     )
 
     return JOB_SCRIPT_TEMPLATE.format(
@@ -160,6 +159,26 @@ def create_job_script_source(
         setup=setup,
         setup_continue=setup_continue,
         teardown=teardown,
+    )
+
+
+def create_job_interactive_script_source(
+    sbatch_options: dict[str, Any],
+    job_dir: str,
+    job_path: str,
+    cleanup_seconds: int,
+) -> str:
+    """Returns source for job script."""
+    job_dir = _expand_path(job_dir)
+    job_path = _expand_path(job_path)
+
+    sbatch_options_str = _sbatch_options_to_str(
+        sbatch_options, job_dir, cleanup_seconds
+    )
+
+    return JOB_INTERACTIVE_TEMPLATE.format(
+        sbatch_options_str=sbatch_options_str,
+        job_path=job_path,
     )
 
 
@@ -210,3 +229,12 @@ def _write_script(filename: str, text: str):
 
     st = os.stat(filename)
     os.chmod(filename, st.st_mode | stat.S_IEXEC)
+
+
+def _sbatch_options_to_str(
+    sbatch_options: dict[str, Any], job_dir: str, cleanup_seconds: int
+) -> str:
+    sbatch_options = dict(sbatch_options)
+    sbatch_options["output"] = f"{job_dir}/slurm_jobid%j_%x.out"
+    sbatch_options["signal"] = f"B:USR1@{cleanup_seconds}"
+    return "\n".join(f"#SBATCH --{k}={v}" for k, v in sbatch_options.items())
