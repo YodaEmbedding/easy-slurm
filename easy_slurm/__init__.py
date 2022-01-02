@@ -62,6 +62,7 @@ def submit_job(
     setup_continue: str,
     teardown: str,
     sbatch_options: dict[str, Any],
+    cleanup_seconds: int = 120,
     interactive: bool = False,
 ):
     """Submits job.
@@ -86,6 +87,7 @@ def submit_job(
         teardown=teardown,
         job_dir=job_dir,
         dataset=dataset,
+        cleanup_seconds=cleanup_seconds,
     )
 
     job_path = f"{job_dir}/job.sh"
@@ -95,7 +97,7 @@ def submit_job(
         sbatch_options=sbatch_options,
         job_path=job_path,
         job_dir=job_dir,
-        cleanup_seconds=120,
+        cleanup_seconds=cleanup_seconds,
     )
 
     job_interactive_path = f"{job_dir}/job_interactive.sh"
@@ -131,6 +133,7 @@ def create_job_script_source(
     teardown: str,
     job_dir: str,
     dataset: str,
+    cleanup_seconds: int,
 ) -> str:
     """Returns source for job script."""
     job_dir = _expand_path(job_dir)
@@ -146,7 +149,6 @@ def create_job_script_source(
     setup_continue = fix_indent(setup_continue)
     teardown = fix_indent(teardown)
 
-    cleanup_seconds = 120
     sbatch_options_str = _sbatch_options_to_str(
         sbatch_options, job_dir, cleanup_seconds
     )
