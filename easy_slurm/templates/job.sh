@@ -103,7 +103,6 @@ run() {
   else
     cmd="$on_continue"
   fi
-  # bash -c "echo $$ > '$SLURM_TMPDIR/prog.pid'; exec $cmd"
   eval "$cmd &"
   echo $! > "$SLURM_TMPDIR/prog.pid"
   wait
