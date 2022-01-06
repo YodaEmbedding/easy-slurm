@@ -4,8 +4,8 @@
 
 {{vars_str}}
 
-on_run="{{on_run}}"
-on_continue="{{on_continue}}"
+on_run='{{on_run}}'
+on_continue='{{on_continue}}'
 
 IS_INTERRUPTED=false
 IS_FIRST_RUN=false

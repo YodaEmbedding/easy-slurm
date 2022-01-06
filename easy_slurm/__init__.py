@@ -149,6 +149,10 @@ def create_job_script_source(
     setup_continue = fix_indent(setup_continue)
     teardown = fix_indent(teardown)
 
+    fix_quotes = lambda x: _quote_single_quotes(x.strip())
+    on_run = fix_quotes(on_run)
+    on_continue = fix_quotes(on_continue)
+
     sbatch_options_str = _sbatch_options_to_str(
         sbatch_options, job_dir, cleanup_seconds
     )
@@ -240,3 +244,8 @@ def _sbatch_options_to_str(
     sbatch_options["output"] = f"{job_dir}/slurm_jobid%j_%x.out"
     sbatch_options["signal"] = f"B:USR1@{cleanup_seconds}"
     return "\n".join(f"#SBATCH --{k}={v}" for k, v in sbatch_options.items())
+
+
+def _quote_single_quotes(s: str) -> str:
+    """Replaces ' with '"'"'."""
+    return s.replace("'", """'"'"'""")
