@@ -6,7 +6,7 @@ easy_slurm.submit_job(
     assets="./assets",
     dataset="./data.tar.gz",
     on_run="python main.py",
-    on_run_resume="python main.py --continue",
+    on_run_resume="python main.py --resume",
     setup="""
         module load python/3.9
         virtualenv --no-download "$SLURM_TMPDIR/env"

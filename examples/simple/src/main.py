@@ -6,7 +6,7 @@ import tomlkit as toml
 
 def parse_args():
     parser = ArgumentParser()
-    parser.add_argument("--continue", dest="continue_", action="store_true")
+    parser.add_argument("--resume", dest="resume", action="store_true")
     args = parser.parse_args()
     return args
 
@@ -17,7 +17,7 @@ def main():
     with open("../assets/config.toml") as f:
         config = toml.loads(f.read())
 
-    if args.continue_:
+    if args.resume:
         with open("../results/state_dict.toml") as f:
             state_dict = toml.loads(f.read())
     else:
