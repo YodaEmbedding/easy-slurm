@@ -5,7 +5,7 @@
 {{vars_str}}
 
 on_run='{{on_run}}'
-on_continue='{{on_continue}}'
+on_run_resume='{{on_run_resume}}'
 
 IS_INTERRUPTED=false
 IS_FIRST_RUN=false
@@ -26,9 +26,9 @@ setup() {
 {{setup}}
 }
 
-setup_continue() {
-  begin_func "setup_continue" "$SLURM_TMPDIR"
-{{setup_continue}}
+setup_resume() {
+  begin_func "setup_resume" "$SLURM_TMPDIR"
+{{setup_resume}}
 }
 
 teardown() {
@@ -89,7 +89,7 @@ run_setup() {
     setup
   else
     tar xf "$JOB_DIR/results.tar.gz"
-    setup_continue
+    setup_resume
   fi
   mkdir -p "$SLURM_TMPDIR/results"
 }
@@ -101,7 +101,7 @@ run() {
   if [ "$IS_FIRST_RUN" = true ]; then
     cmd="$on_run"
   else
-    cmd="$on_continue"
+    cmd="$on_run_resume"
   fi
   eval "$cmd &"
   echo $! > "$SLURM_TMPDIR/prog.pid"

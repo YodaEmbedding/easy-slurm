@@ -6,12 +6,12 @@ Helps users submit robust jobs to slurm using a python/bash interface.
  - Freezes source code and assets by copying to separate `JOB_DIR`.
  - Copies data to local filesystem of compute node (`SLURM_TMPDIR`)
    for performance.
- - Exposes hooks for custom bash code: `setup`, `setup_continue`,
-   `on_run`, `on_continue`, and `teardown`.
+ - Exposes hooks for custom bash code: `setup`, `setup_resume`,
+   `on_run`, `on_run_resume`, and `teardown`.
  - Interrupts running worker process before job time runs out.
  - Auto-saves results back to `JOB_DIR`.
- - On continuing an incomplete run, extracts intermediate saved results
-   and runs `*_continue` hooks.
+ - On resuming an incomplete run, extracts intermediate saved results
+   and runs `*_resume` hooks.
 
 ## Details
 
@@ -57,9 +57,9 @@ def submit_job(
     assets: str,
     dataset: str,
     on_run: str,
-    on_continue: str,
+    on_run_resume: str,
     setup: str,
-    setup_continue: str,
+    setup_resume: str,
     teardown: str,
     sbatch_options: dict[str, Any],
     cleanup_seconds: int = 120,
@@ -81,9 +81,9 @@ def submit_job(
     job_script_str = create_job_script_source(
         sbatch_options=sbatch_options,
         on_run=on_run,
-        on_continue=on_continue,
+        on_run_resume=on_run_resume,
         setup=setup,
-        setup_continue=setup_continue,
+        setup_resume=setup_resume,
         teardown=teardown,
         job_dir=job_dir,
         dataset=dataset,
@@ -127,9 +127,9 @@ def submit_job(
 def create_job_script_source(
     sbatch_options: dict[str, Any],
     on_run: str,
-    on_continue: str,
+    on_run_resume: str,
     setup: str,
-    setup_continue: str,
+    setup_resume: str,
     teardown: str,
     job_dir: str,
     dataset: str,
@@ -146,12 +146,12 @@ def create_job_script_source(
 
     fix_indent = lambda x: indent(dedent(x.strip("\n")), "  ").rstrip("\n")
     setup = fix_indent(setup)
-    setup_continue = fix_indent(setup_continue)
+    setup_resume = fix_indent(setup_resume)
     teardown = fix_indent(teardown)
 
     fix_quotes = lambda x: _quote_single_quotes(x.strip())
     on_run = fix_quotes(on_run)
-    on_continue = fix_quotes(on_continue)
+    on_run_resume = fix_quotes(on_run_resume)
 
     sbatch_options_str = _sbatch_options_to_str(
         sbatch_options, job_dir, cleanup_seconds
@@ -161,9 +161,9 @@ def create_job_script_source(
         sbatch_options_str=sbatch_options_str,
         vars_str=vars_str,
         on_run=on_run,
-        on_continue=on_continue,
+        on_run_resume=on_run_resume,
         setup=setup,
-        setup_continue=setup_continue,
+        setup_resume=setup_resume,
         teardown=teardown,
     )
 
