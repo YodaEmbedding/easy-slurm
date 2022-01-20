@@ -11,6 +11,7 @@ EASY_SLURM_VERSION="0.1.0"
 IS_INTERRUPTED=false
 IS_FIRST_RUN=false
 IS_INTERACTIVE=false
+RESUBMIT_COUNT=0
 
 begin_func() {
   local func_name="$1"
@@ -51,6 +52,7 @@ status_write() {
   local status_file="$JOB_DIR/status"
   echo "$1" > "$status_file"
   echo "$EASY_SLURM_VERSION" >> "easy_slurm_version=$status_file"
+  echo "$RESUBMIT_COUNT" >> "resubmit_count=$RESUBMIT_COUNT"
 }
 
 handle_interrupt() {
@@ -81,14 +83,16 @@ parse_args() {
 }
 
 init_vars() {
-  if grep -q "new" "$JOB_DIR/status"; then
+  local status_file="$JOB_DIR/status"
+  if grep -q "new" "$status_file"; then
     IS_FIRST_RUN=true
-  elif grep -q "incomplete" "$JOB_DIR/status"; then
+  elif grep -q "incomplete" "$status_file"; then
     IS_FIRST_RUN=false
   else
     echo "Status not new or incomplete."
     exit 1
   fi
+  RESUBMIT_COUNT="$(sed -n 's/^resubmit_count=\(.*\)$/\1/p' "$status_file")"
 }
 
 extract_data() {
@@ -123,12 +127,19 @@ run() {
   wait
 }
 
+resubmit_job() {
+  local RESULT="$(sbatch "$JOB_DIR/job.sh")"
+  local JOB_ID="$(sed 's/^Submitted batch job \([0-9]\+\)$/\1/' <<< "$RESULT")"
+  echo "$JOB_ID" >> "$JOB_DIR/job_ids"
+  RESUBMIT_COUNT="$(( RESUBMIT_COUNT + 1 ))"
+}
+
 finish() {
   begin_func "finish" "$JOB_DIR"
   if [ "$IS_INTERRUPTED" = true ]; then
-    local RESULT="$(sbatch "$JOB_DIR/job.sh")"
-    JOB_ID="$(sed 's/^Submitted batch job \([0-9]\+\)$/\1/' <<< "$RESULT")"
-    echo "$JOB_ID" >> "$JOB_DIR/job_ids"
+    if (( RESUBMIT_COUNT < RESUBMIT_LIMIT )); then
+      resubmit_job
+    fi
     status_write "incomplete"
   else
     status_write "completed"

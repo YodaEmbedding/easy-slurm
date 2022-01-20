@@ -68,6 +68,7 @@ def submit_job(
     sbatch_options: dict[str, Any],
     cleanup_seconds: int = 120,
     interactive: bool = False,
+    resubmit_limit: int = 64,
     results_sync_method: str = "symlink",
 ):
     """Submits job.
@@ -121,6 +122,10 @@ def submit_job(
             Default is 120 seconds.
         interactive (bool):
             Run as a blocking interactive job. Default is `False`.
+        resubmit_limit (int):
+            Maximum number of times to auto-submit a job for "resume".
+            (Not entirely unlike submitting a resume for a job.)
+            Default is 64 resubmissions.
         results_sync_method (str):
             Choices: "rsync", "symlink", or "targz".
              - rsync: Sync results directory via rsync.
@@ -147,6 +152,7 @@ def submit_job(
         job_dir=job_dir,
         dataset=dataset,
         cleanup_seconds=cleanup_seconds,
+        resubmit_limit=resubmit_limit,
         results_sync_method=results_sync_method,
     )
 
@@ -194,6 +200,7 @@ def create_job_script_source(
     job_dir: str,
     dataset: str,
     cleanup_seconds: int,
+    resubmit_limit: int,
     results_sync_method: str,
 ) -> str:
     """Returns source for job script."""
@@ -203,6 +210,7 @@ def create_job_script_source(
     vars_str = VARS_TEMPLATE.format(
         job_dir=job_dir,
         dataset_path=dataset,
+        resubmit_limit=resubmit_limit,
     )
 
     extract_results = EXTRACT_RESULTS[results_sync_method]
@@ -281,6 +289,7 @@ def create_job_dir(
     with open(f"{job_dir}/status", "w") as f:
         print("new", file=f)
         print(f"easy_slurm_version={__version__}", file=f)
+        print("resubmit_count=0", file=f)
 
     return job_dir
 
