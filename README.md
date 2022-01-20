@@ -1,5 +1,7 @@
 # Easy Slurm
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT) [![PyPI](https://img.shields.io/pypi/v/easy-slurm)](https://pypi.org/project/easy-slurm)
+
 Easily manage and submit robust jobs to Slurm using Python and Bash.
 
 ## Features
