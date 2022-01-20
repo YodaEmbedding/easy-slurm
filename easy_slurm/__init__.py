@@ -35,7 +35,7 @@ If the current run successfully completes, `status` ends with
 `interrupting` and ends with `incomplete`.
 """
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 
 from .jobs import (
     create_job_dir,
