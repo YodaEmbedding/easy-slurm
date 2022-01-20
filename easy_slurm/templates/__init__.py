@@ -1,4 +1,4 @@
-import os
+import os as _os
 
 
 def _format_template(s: str) -> str:
@@ -13,14 +13,14 @@ def _format_template(s: str) -> str:
     )
 
 
-_dir_path = os.path.dirname(os.path.realpath(__file__))
+_dir_path = _os.path.dirname(_os.path.realpath(__file__))
 
-with open(os.path.join(_dir_path, "job.sh")) as _f:
+with open(_os.path.join(_dir_path, "job.sh")) as _f:
     JOB_SCRIPT_TEMPLATE = _f.read()
 
 JOB_SCRIPT_TEMPLATE = _format_template(JOB_SCRIPT_TEMPLATE)
 
-with open(os.path.join(_dir_path, "job_interactive.sh")) as _f:
+with open(_os.path.join(_dir_path, "job_interactive.sh")) as _f:
     JOB_INTERACTIVE_TEMPLATE = _f.read()
 
 JOB_INTERACTIVE_TEMPLATE = _format_template(JOB_INTERACTIVE_TEMPLATE)
