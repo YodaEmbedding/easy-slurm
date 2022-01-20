@@ -35,6 +35,8 @@ If the current run successfully completes, `status` ends with
 `interrupting` and ends with `incomplete`.
 """
 
+__version__ = "0.1.0"
+
 
 import os
 import re
@@ -278,6 +280,7 @@ def create_job_dir(
 
     with open(f"{job_dir}/status", "w") as f:
         print("new", file=f)
+        print(f"easy_slurm_version={__version__}", file=f)
 
     return job_dir
 
