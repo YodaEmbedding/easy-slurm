@@ -208,6 +208,7 @@ def create_job_script_source(
     dataset = _expand_path(dataset)
 
     vars_str = VARS_TEMPLATE.format(
+        easy_slurm_version=__version__,
         job_dir=job_dir,
         dataset_path=dataset,
         resubmit_limit=resubmit_limit,
