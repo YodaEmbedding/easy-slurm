@@ -50,8 +50,8 @@ save_results() {
 status_write() {
   local status_file="$JOB_DIR/status"
   echo "$1" > "$status_file"
-  echo "$EASY_SLURM_VERSION" >> "easy_slurm_version=$status_file"
-  echo "$RESUBMIT_COUNT" >> "resubmit_count=$RESUBMIT_COUNT"
+  echo "easy_slurm_version=$EASY_SLURM_VERSION" >> "$status_file"
+  echo "resubmit_count=$RESUBMIT_COUNT" >> "$status_file"
 }
 
 handle_interrupt() {
