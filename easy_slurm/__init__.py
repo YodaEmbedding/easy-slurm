@@ -144,10 +144,9 @@ def create_job_script_source(
         dataset_path=dataset,
     )
 
-    fix_indent = lambda x: indent(dedent(x.strip("\n")), "  ").rstrip("\n")
-    setup = fix_indent(setup)
-    setup_resume = fix_indent(setup_resume)
-    teardown = fix_indent(teardown)
+    setup = _fix_indent(setup, 1)
+    setup_resume = _fix_indent(setup_resume, 1)
+    teardown = _fix_indent(teardown, 1)
 
     fix_quotes = lambda x: _quote_single_quotes(x.strip())
     on_run = fix_quotes(on_run)
@@ -249,3 +248,7 @@ def _sbatch_options_to_str(
 def _quote_single_quotes(s: str) -> str:
     """Replaces ' with '"'"'."""
     return s.replace("'", """'"'"'""")
+
+
+def _fix_indent(x: str, level: int = 0) -> str:
+    return indent(dedent(x.strip("\n")), "  " * level).rstrip("\n")
