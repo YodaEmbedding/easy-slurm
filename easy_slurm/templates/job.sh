@@ -36,6 +36,20 @@ teardown() {
 {{teardown}}
 }
 
+extract_results() {
+  begin_func "extract_results" "$SLURM_TMPDIR"
+  if [ "$IS_FIRST_RUN" = false ]; then
+    tar xf "$JOB_DIR/results.tar.gz"
+  fi
+  mkdir -p "$SLURM_TMPDIR/results"
+}
+
+save_results() {
+  begin_func "save_results" "$SLURM_TMPDIR"
+  tar czf results.tar.gz results
+  mv results.tar.gz "$JOB_DIR/"
+}
+
 handle_interrupt() {
   echo "interrupting" > "$JOB_DIR/status"
   echo ">>> Call handle_interrupt at $(date)"
@@ -78,10 +92,6 @@ extract_data() {
   begin_func "extract_data" "$SLURM_TMPDIR"
   tar xf "$JOB_DIR/assets.tar.gz"
   tar xf "$JOB_DIR/src.tar.gz"
-  if [ "$IS_FIRST_RUN" = false ]; then
-    tar xf "$JOB_DIR/results.tar.gz"
-  fi
-  mkdir -p "$SLURM_TMPDIR/results"
   mkdir -p "$SLURM_TMPDIR/datasets"
   cd "$SLURM_TMPDIR/datasets" || exit 1
   tar xf "$DATASET_PATH"
@@ -110,12 +120,6 @@ run() {
   wait
 }
 
-save_results() {
-  begin_func "save_results" "$SLURM_TMPDIR"
-  tar czf results.tar.gz results
-  mv results.tar.gz "$JOB_DIR/"
-}
-
 finish() {
   begin_func "finish" "$JOB_DIR"
   if [ "$IS_INTERRUPTED" = true ]; then
@@ -131,6 +135,7 @@ finish() {
 initialize() {
   init_vars
   echo "initializing" > "$JOB_DIR/status"
+  extract_results
   extract_data
   run_setup
 }
