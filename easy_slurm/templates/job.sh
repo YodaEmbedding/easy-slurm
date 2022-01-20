@@ -78,6 +78,10 @@ extract_data() {
   begin_func "extract_data" "$SLURM_TMPDIR"
   tar xf "$JOB_DIR/assets.tar.gz"
   tar xf "$JOB_DIR/src.tar.gz"
+  if [ "$IS_FIRST_RUN" = false ]; then
+    tar xf "$JOB_DIR/results.tar.gz"
+  fi
+  mkdir -p "$SLURM_TMPDIR/results"
   mkdir -p "$SLURM_TMPDIR/datasets"
   cd "$SLURM_TMPDIR/datasets" || exit 1
   tar xf "$DATASET_PATH"
@@ -88,10 +92,8 @@ run_setup() {
   if [ "$IS_FIRST_RUN" = true ]; then
     setup
   else
-    tar xf "$JOB_DIR/results.tar.gz"
     setup_resume
   fi
-  mkdir -p "$SLURM_TMPDIR/results"
 }
 
 run() {
