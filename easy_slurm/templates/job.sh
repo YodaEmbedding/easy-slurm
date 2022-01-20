@@ -46,8 +46,13 @@ save_results() {
 {{save_results}}
 }
 
+status_write() {
+  local status_file="$JOB_DIR/status"
+  echo "$1" > "$status_file"
+}
+
 handle_interrupt() {
-  echo "interrupting" > "$JOB_DIR/status"
+  status_write "interrupting"
   echo ">>> Call handle_interrupt at $(date)"
   local PROG_PID="$(< "$SLURM_TMPDIR/prog.pid")"
   kill -TERM "$PROG_PID"
@@ -103,7 +108,7 @@ run_setup() {
 }
 
 run() {
-  echo "running" > "$JOB_DIR/status"
+  status_write "running"
   begin_func "run" "$SLURM_TMPDIR/src"
   trap handle_interrupt USR1
   if [ "$IS_FIRST_RUN" = true ]; then
@@ -122,22 +127,22 @@ finish() {
     local RESULT="$(sbatch "$JOB_DIR/job.sh")"
     JOB_ID="$(sed 's/^Submitted batch job \([0-9]\+\)$/\1/' <<< "$RESULT")"
     echo "$JOB_ID" >> "$JOB_DIR/job_ids"
-    echo "incomplete" > "$JOB_DIR/status"
+    status_write "incomplete"
   else
-    echo "completed" > "$JOB_DIR/status"
+    status_write "completed"
   fi
 }
 
 initialize() {
   init_vars
-  echo "initializing" > "$JOB_DIR/status"
+  status_write "initializing"
   extract_results
   extract_data
   run_setup
 }
 
 finalize() {
-  echo "finalizing" > "$JOB_DIR/status"
+  status_write "finalizing"
   teardown
   save_results
   finish
@@ -147,7 +152,7 @@ main() {
   parse_args "$@"
   initialize
   if [ "$IS_INTERACTIVE" = true ]; then
-    echo "interacting" > "$JOB_DIR/status"
+    status_write "interacting"
     trap finalize EXIT
   else
     run
