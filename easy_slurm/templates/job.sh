@@ -7,6 +7,7 @@
 on_run='{{on_run}}'
 on_run_resume='{{on_run_resume}}'
 
+EASY_SLURM_VERSION="0.1.0"
 IS_INTERRUPTED=false
 IS_FIRST_RUN=false
 IS_INTERACTIVE=false
@@ -49,6 +50,7 @@ save_results() {
 status_write() {
   local status_file="$JOB_DIR/status"
   echo "$1" > "$status_file"
+  echo "$EASY_SLURM_VERSION" >> "easy_slurm_version=$status_file"
 }
 
 handle_interrupt() {
