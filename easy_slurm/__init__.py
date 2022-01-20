@@ -71,6 +71,60 @@ def submit_job(
     """Submits job.
 
     Creates job directory with frozen assets and submits job to slurm.
+
+    Args:
+        job_root (str):
+            Path to directory where a time-stamped `$JOB_DIR` will be
+            created to store all job files including `src.tar`,
+            `assets.tar`, auto-generated `job.sh`, and results.
+            Note that the `dataset` will not be copied and will remain
+            in its original path.
+        src (str):
+            Path to directory containing only source code.
+            These will be archived in `$JOB_DIR/src.tar` and
+            extracted during job run into `$SLURM_TMPDIR/src`.
+        assets (str):
+            Path to directory containing additional assets.
+            These will be archived in `$JOB_DIR/assets.tar` and
+            extracted during job run into `$SLURM_TMPDIR/assets`.
+        dataset (str):
+            Path to `.tar` archive of dataset. This will be copied and
+            extracted on the local filesystem of the compute node,
+            `$SLURM_TMPDIR`.
+        on_run (str):
+            Bash code executed in "on_run" stage, but only for new jobs
+            that are running for the first time.
+            Must be a single command only.
+            Optionally, the command may gracefully handle interrupts.
+        on_run_resume (str):
+            Bash code executed in "on_run" stage, but only for jobs that
+            are resuming from previous incomplete runs.
+            Must be a single command only.
+            Optionally, the command may gracefully handle interrupts.
+        setup (str):
+            Bash code executed in "setup" stage, but only for new jobs
+            that are running for the first time.
+        setup_resume (str):
+            Bash code executed in "setup" stage, but only for jobs that
+            are resuming from previous incomplete runs.
+            To reuse the code from `setup`, simply set this to
+            `"setup"`, which calls the code inside the `setup` function.
+        teardown (str):
+            Bash code executed in "teardown" stage.
+        sbatch_options (dict[str, Any]):
+            Dictionary of options to pass to sbatch.
+        cleanup_seconds (int):
+            Interrupts a job n seconds before timeout to run cleanup
+            tasks (teardown, save_results, auto-schedule new job).
+            Default is 120 seconds.
+        interactive (bool):
+            Run as a blocking interactive job. Default is `False`.
+        results_sync_method (str):
+            Choices: "rsync", "symlink", or "targz".
+             - rsync: Sync results directory via rsync.
+             - symlink: Directly symlink results directory.
+             - targz: Extract/archive results directory into .tar.gz.
+            Default is `"symlink"`.
     """
     job_name = sbatch_options.get("job-name", "untitled")
 
