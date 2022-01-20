@@ -38,16 +38,12 @@ teardown() {
 
 extract_results() {
   begin_func "extract_results" "$SLURM_TMPDIR"
-  if [ "$IS_FIRST_RUN" = false ]; then
-    tar xf "$JOB_DIR/results.tar.gz"
-  fi
-  mkdir -p "$SLURM_TMPDIR/results"
+{{extract_results}}
 }
 
 save_results() {
   begin_func "save_results" "$SLURM_TMPDIR"
-  tar czf results.tar.gz results
-  mv results.tar.gz "$JOB_DIR/"
+{{save_results}}
 }
 
 handle_interrupt() {

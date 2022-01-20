@@ -31,3 +31,37 @@ DATASET_PATH={dataset_path}
 """
 
 VARS_TEMPLATE = VARS_TEMPLATE.strip("\n")
+
+EXTRACT_RESULTS = {
+    "rsync": r"""
+        mkdir -p "$JOB_DIR/results"
+        mkdir -p "$SLURM_TMPDIR/results"
+        rsync -a "$JOB_DIR/results/" "$SLURM_TMPDIR/results/"
+    """,
+    "symlink": r"""
+        mkdir -p "$JOB_DIR/results/"
+        ln -s "$JOB_DIR/results" "$SLURM_TMPDIR/results"
+    """,
+    "targz": r"""
+        if [ "$IS_FIRST_RUN" = false ]; then
+          tar xf "$JOB_DIR/results.tar.gz"
+        fi
+        mkdir -p "$SLURM_TMPDIR/results"
+    """,
+}
+
+EXTRACT_RESULTS = {k: v.strip("\n") for k, v in EXTRACT_RESULTS.items()}
+
+SAVE_RESULTS = {
+    "rsync": r"""
+        rsync -a --partial "$SLURM_TMPDIR/results/" "$JOB_DIR/results/"
+    """,
+    "symlink": r"""
+    """,
+    "targz": r"""
+        tar czf results.tar.gz results
+        mv results.tar.gz "$JOB_DIR/"
+    """,
+}
+
+SAVE_RESULTS = {k: v.strip("\n") for k, v in SAVE_RESULTS.items()}

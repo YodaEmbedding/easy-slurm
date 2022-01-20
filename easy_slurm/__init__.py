@@ -45,8 +45,10 @@ from textwrap import dedent, indent
 from typing import Any
 
 from .templates import (
+    EXTRACT_RESULTS,
     JOB_INTERACTIVE_TEMPLATE,
     JOB_SCRIPT_TEMPLATE,
+    SAVE_RESULTS,
     VARS_TEMPLATE,
 )
 
@@ -64,6 +66,7 @@ def submit_job(
     sbatch_options: dict[str, Any],
     cleanup_seconds: int = 120,
     interactive: bool = False,
+    results_sync_method: str = "symlink",
 ):
     """Submits job.
 
@@ -88,6 +91,7 @@ def submit_job(
         job_dir=job_dir,
         dataset=dataset,
         cleanup_seconds=cleanup_seconds,
+        results_sync_method=results_sync_method,
     )
 
     job_path = f"{job_dir}/job.sh"
@@ -134,6 +138,7 @@ def create_job_script_source(
     job_dir: str,
     dataset: str,
     cleanup_seconds: int,
+    results_sync_method: str,
 ) -> str:
     """Returns source for job script."""
     job_dir = _expand_path(job_dir)
@@ -144,9 +149,14 @@ def create_job_script_source(
         dataset_path=dataset,
     )
 
+    extract_results = EXTRACT_RESULTS[results_sync_method]
+    save_results = SAVE_RESULTS[results_sync_method]
+
     setup = _fix_indent(setup, 1)
     setup_resume = _fix_indent(setup_resume, 1)
     teardown = _fix_indent(teardown, 1)
+    extract_results = _fix_indent(extract_results, 1)
+    save_results = _fix_indent(save_results, 1)
 
     fix_quotes = lambda x: _quote_single_quotes(x.strip())
     on_run = fix_quotes(on_run)
@@ -164,6 +174,8 @@ def create_job_script_source(
         setup=setup,
         setup_resume=setup_resume,
         teardown=teardown,
+        extract_results=extract_results,
+        save_results=save_results,
     )
 
 
