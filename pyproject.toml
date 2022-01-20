@@ -4,6 +4,9 @@ version = "0.1.0"
 description = "Easily manage and submit robust jobs to Slurm using Python and Bash."
 authors = ["Mateen Ulhaq <mulhaq2005@gmail.com>"]
 license = "MIT"
+repository = "https://github.com/YodaEmbedding/easy-slurm"
+keywords = ["slurm", "sbatch"]
+readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.7"
