@@ -38,7 +38,7 @@ EXTRACT_RESULTS = {
     "rsync": r"""
         mkdir -p "$JOB_DIR/results"
         mkdir -p "$SLURM_TMPDIR/results"
-        rsync -a "$JOB_DIR/results/" "$SLURM_TMPDIR/results/"
+        rsync -a --compress "$JOB_DIR/results/" "$SLURM_TMPDIR/results/"
     """,
     "symlink": r"""
         mkdir -p "$JOB_DIR/results/"
@@ -56,7 +56,7 @@ EXTRACT_RESULTS = {k: v.strip("\n") for k, v in EXTRACT_RESULTS.items()}
 
 SAVE_RESULTS = {
     "rsync": r"""
-        rsync -a --partial "$SLURM_TMPDIR/results/" "$JOB_DIR/results/"
+        rsync -a --compress --partial "$SLURM_TMPDIR/results/" "$JOB_DIR/results/"
     """,
     "symlink": r"""
     """,
