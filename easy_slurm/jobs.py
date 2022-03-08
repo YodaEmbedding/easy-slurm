@@ -31,7 +31,7 @@ def submit_job(
     interactive: bool = False,
     resubmit_limit: int = 64,
     results_sync_method: str = "symlink",
-):
+) -> str:
     """Submits job.
 
     Creates job directory with frozen assets and submits job to slurm.
@@ -93,6 +93,9 @@ def submit_job(
              - symlink: Directly symlink results directory.
              - targz: Extract/archive results directory into .tar.gz.
             Default is `"symlink"`.
+
+        Returns:
+            Path to the newly created job directory.
     """
     job_name = sbatch_options.get("job-name", "untitled")
 
@@ -149,6 +152,8 @@ def submit_job(
 
         with open(f"{job_dir}/job_ids", "w") as f:
             print(job_id, file=f)
+
+    return job_dir
 
 
 def create_job_script_source(
