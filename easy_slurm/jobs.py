@@ -104,12 +104,10 @@ def submit_job(
     """
     job_name = sbatch_options.get("job-name", "untitled")
 
-    job_dir = create_job_dir(
-        job_name=job_name,
-        job_root=job_root,
-        src=src,
-        assets=assets,
-    )
+    job_root = _expand_path(job_root)
+    datestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S_%f")[:-3]
+    job_dir = f"{job_root}/{datestamp}_{job_name}"
+    create_job_dir(job_dir, src, assets)
 
     job_path = f"{job_dir}/job.sh"
     job_script_str = create_job_script_source(
@@ -217,25 +215,16 @@ def create_job_interactive_script_source(
 
 
 def create_job_dir(
-    job_name: str,
-    job_root: str,
+    job_dir: str,
     src: str,
     assets: str,
-) -> str:
-    """Creates job directory and freezes all necessary files.
-
-    Returns:
-        Path to the newly created job directory.
-    """
-    job_root = _expand_path(job_root)
+):
+    """Creates job directory and freezes all necessary files."""
+    job_dir = _expand_path(job_dir)
     src = _expand_path(src)
     assets = _expand_path(assets)
 
-    now = datetime.now()
-    datestamp = now.strftime("%Y-%m-%d_%H-%M-%S_%f")[:-3]
-    job_dir = f"{job_root}/{datestamp}_{job_name}"
     os.makedirs(job_dir, exist_ok=True)
-
     _create_tar_dir(src, f"{job_dir}/src.tar.gz", "src")
     _create_tar_dir(assets, f"{job_dir}/assets.tar.gz", "assets")
 
@@ -243,8 +232,6 @@ def create_job_dir(
         print("status=new", file=f)
         print(f"easy_slurm_version={__version__}", file=f)
         print("resubmit_count=0", file=f)
-
-    return job_dir
 
 
 def submit_job_dir(job_dir: str, interactive: bool):
