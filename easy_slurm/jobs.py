@@ -111,6 +111,7 @@ def submit_job(
         assets=assets,
     )
 
+    job_path = f"{job_dir}/job.sh"
     job_script_str = create_job_script_source(
         sbatch_options=sbatch_options,
         on_run=on_run,
@@ -124,18 +125,15 @@ def submit_job(
         resubmit_limit=resubmit_limit,
         results_sync_method=results_sync_method,
     )
-
-    job_path = f"{job_dir}/job.sh"
     _write_script(job_path, job_script_str)
 
+    job_interactive_path = f"{job_dir}/job_interactive.sh"
     job_interactive_script_str = create_job_interactive_script_source(
         sbatch_options=sbatch_options,
         job_path=job_path,
         job_dir=job_dir,
         cleanup_seconds=cleanup_seconds,
     )
-
-    job_interactive_path = f"{job_dir}/job_interactive.sh"
     _write_script(job_interactive_path, job_interactive_script_str)
 
     if submit:
