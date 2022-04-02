@@ -28,6 +28,7 @@ def submit_job(
     teardown: str,
     sbatch_options: dict[str, Any],
     cleanup_seconds: int = 120,
+    submit: bool = True,
     interactive: bool = False,
     resubmit_limit: int = 64,
     results_sync_method: str = "symlink",
@@ -81,6 +82,10 @@ def submit_job(
             Interrupts a job n seconds before timeout to run cleanup
             tasks (teardown, save_results, auto-schedule new job).
             Default is 120 seconds.
+        submit (bool):
+            Submit created job to scheduler. Set this to `False` if you
+            are manually submitting the created `$JOB_DIR` later.
+            Default is `True`.
         interactive (bool):
             Run as a blocking interactive job. Default is `False`.
         resubmit_limit (int):
@@ -133,7 +138,8 @@ def submit_job(
     job_interactive_path = f"{job_dir}/job_interactive.sh"
     _write_script(job_interactive_path, job_interactive_script_str)
 
-    submit_job_dir(job_dir, interactive)
+    if submit:
+        submit_job_dir(job_dir, interactive)
 
     return job_dir
 
@@ -244,7 +250,11 @@ def create_job_dir(
 
 
 def submit_job_dir(job_dir: str, interactive: bool):
-    """Submits a `$JOB_DIR` created by easy_slurm to slurm."""
+    """Submits a `$JOB_DIR` created by easy_slurm to slurm.
+
+    Note that `submit_job` already does this for the user,
+    except when it is called with `submit=False`.
+    """
     if interactive:
         job_interactive_path = f"{job_dir}/job_interactive.sh"
         subprocess.run(
