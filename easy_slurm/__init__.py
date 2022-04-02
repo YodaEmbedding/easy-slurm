@@ -37,6 +37,7 @@ If the current run successfully completes, `status` ends with
 
 __version__ = "0.1.1"
 
+from .format import format_with_config
 from .jobs import (
     create_job_dir,
     create_job_interactive_script_source,
