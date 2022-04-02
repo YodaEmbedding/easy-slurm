@@ -133,25 +133,7 @@ def submit_job(
     job_interactive_path = f"{job_dir}/job_interactive.sh"
     _write_script(job_interactive_path, job_interactive_script_str)
 
-    if interactive:
-        subprocess.run(
-            ["srun", "--pty", "bash", "--init-file", job_interactive_path],
-            check=True,
-            text=True,
-        )
-    else:
-        result = subprocess.run(
-            ["sbatch", job_path],
-            check=True,
-            capture_output=True,
-            text=True,
-        )
-
-        m = re.match(r"^Submitted batch job (\d+)$", result.stdout)
-        job_id = int(m.group(1))
-
-        with open(f"{job_dir}/job_ids", "w") as f:
-            print(job_id, file=f)
+    submit_job_dir(job_dir, interactive)
 
     return job_dir
 
@@ -259,6 +241,31 @@ def create_job_dir(
         print("resubmit_count=0", file=f)
 
     return job_dir
+
+
+def submit_job_dir(job_dir: str, interactive: bool):
+    """Submits a `$JOB_DIR` created by easy_slurm to slurm."""
+    if interactive:
+        job_interactive_path = f"{job_dir}/job_interactive.sh"
+        subprocess.run(
+            ["srun", "--pty", "bash", "--init-file", job_interactive_path],
+            check=True,
+            text=True,
+        )
+    else:
+        job_path = f"{job_dir}/job.sh"
+        result = subprocess.run(
+            ["sbatch", job_path],
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+
+        m = re.match(r"^Submitted batch job (\d+)$", result.stdout)
+        job_id = int(m.group(1))
+
+        with open(f"{job_dir}/job_ids", "w") as f:
+            print(job_id, file=f)
 
 
 def _expand_path(path: str) -> str:

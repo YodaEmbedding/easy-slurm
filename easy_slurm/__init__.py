@@ -42,4 +42,5 @@ from .jobs import (
     create_job_interactive_script_source,
     create_job_script_source,
     submit_job,
+    submit_job_dir,
 )
