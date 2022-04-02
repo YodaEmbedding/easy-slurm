@@ -99,8 +99,8 @@ def submit_job(
              - targz: Extract/archive results directory into .tar.gz.
             Default is `"symlink"`.
 
-        Returns:
-            Path to the newly created job directory.
+    Returns:
+        Path to the newly created job directory.
     """
     job_name = sbatch_options.get("job-name", "untitled")
 
