@@ -240,7 +240,7 @@ def create_job_dir(
     _create_tar_dir(assets, f"{job_dir}/assets.tar.gz", "assets")
 
     with open(f"{job_dir}/status", "w") as f:
-        print("new", file=f)
+        print("status=new", file=f)
         print(f"easy_slurm_version={__version__}", file=f)
         print("resubmit_count=0", file=f)
 

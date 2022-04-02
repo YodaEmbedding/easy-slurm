@@ -49,7 +49,7 @@ save_results() {
 
 status_write() {
   local status_file="$JOB_DIR/status"
-  echo "$1" > "$status_file"
+  echo "status=$1" > "$status_file"
   echo "easy_slurm_version=$EASY_SLURM_VERSION" >> "$status_file"
   echo "resubmit_count=$RESUBMIT_COUNT" >> "$status_file"
 }
@@ -83,9 +83,9 @@ parse_args() {
 
 init_vars() {
   local status_file="$JOB_DIR/status"
-  if grep -q "new" "$status_file"; then
+  if grep -q 'status\s*=\s*new' "$status_file"; then
     IS_FIRST_RUN=true
-  elif grep -q "incomplete" "$status_file"; then
+  elif grep -q 'status\s*=\s*incomplete' "$status_file"; then
     IS_FIRST_RUN=false
   else
     echo "Status not new or incomplete."
