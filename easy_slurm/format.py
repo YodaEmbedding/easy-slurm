@@ -27,6 +27,13 @@ def format_with_config(
 
     See the examples below.
 
+    Args:
+        template: String to format.
+        config: Key-value data to replace `"{key:format_spec}"` with.
+
+    Returns:
+        Formatted string.
+
     Examples:
         >>> from datetime import datetime
         >>> date_string = "2020-01-01 00:00:03.141592"
