@@ -54,7 +54,7 @@ def format_with_config(
     if _now is None:
         _now = datetime.now()
 
-    template = encode_pair("{{", "}}", template)
+    template = encode_pair("{{", "}}", 2, template)
     matches = list(re.finditer(r"\{[^\}]*\}", template))
     spans = [match.span() for match in matches]
     spans = [(0, 0)] + spans + [(len(template), len(template))]
@@ -66,7 +66,8 @@ def format_with_config(
             template[r1:l2],
         ]
     )
-    formatted_result = decode_pair("{{", "}}", formatted_result)
+    print(formatted_result)
+    formatted_result = decode_pair("{", "}", 2, formatted_result)
     return formatted_result
 
 
@@ -97,21 +98,21 @@ def dict_set(d: dict[str, Any], path_seq: Sequence[str], value: Any):
     d[path_seq[-1]] = value
 
 
-def encode_pair(left: str, right: str, s: str) -> str:
+def encode_pair(left: str, right: str, rep: int, s: str) -> str:
     """Encodes a left/right pair using temporary characters."""
     return (
         s.replace("", "")
-        .replace(left, "\ufffe" * len(left))
-        .replace(right, "\uffff" * len(right))
+        .replace(left, "\ufffe" * rep)
+        .replace(right, "\uffff" * rep)
     )
 
 
-def decode_pair(left: str, right: str, s: str) -> str:
+def decode_pair(left: str, right: str, rep: int, s: str) -> str:
     """Decodes a left/right pair using temporary characters."""
     return (
         s.replace("", "")
-        .replace("\ufffe" * len(left), left)
-        .replace("\uffff" * len(right), right)
+        .replace("\ufffe" * rep, left)
+        .replace("\uffff" * rep, right)
     )
 
 
