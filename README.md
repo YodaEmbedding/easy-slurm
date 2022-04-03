@@ -29,7 +29,7 @@ To submit a job, simply fill in the various parameters shown in the example belo
 import easy_slurm
 
 easy_slurm.submit_job(
-    job_dir="$HOME/.local/share/easy_slurm/example-simple",
+    job_dir="$HOME/jobs/{date:%Y-%m-%d}-{job_name}",
     src="./src",
     assets="./assets",
     dataset="./data.tar.gz",
@@ -67,3 +67,32 @@ teardown
 
 Full examples can be found [here](./examples), including a [simple example](./examples/simple) to run "training epochs" on a cluster.
 
+### Formatting
+
+One useful feature is formatting paths using custom template strings:
+```python
+easy_slurm.submit_job(
+    job_dir="$HOME/jobs/{date:%Y-%m-%d}-{job_name}",
+)
+```
+
+The job names can be formatted using a config dictionary:
+```python
+job_name = easy_slurm.format.format_with_config(
+    "bs={hp.batch_size:04},lr={hp.lr:.1e}",
+    config={"hp": {"batch_size": 32, "lr": 1e-2}},
+)
+
+easy_slurm.submit_job(
+    job_dir="$HOME/jobs/{date:%Y-%m-%d}-{job_name}",
+    sbatch_options={
+        "job-name": job_name,  # equals "bs=0032,lr=1.0e-02"
+        ...
+    },
+    ...
+)
+```
+
+This helps in automatically creating descriptive, human-readable job names.
+
+See documentation for more information and examples.
