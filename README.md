@@ -6,14 +6,11 @@ Easily manage and submit robust jobs to Slurm using Python and Bash.
 
 ## Features
 
- - **Freezes** source code and assets by copying to separate `JOB_DIR`.
- - Applies **performance tweaks** like copying data to local filesystem of compute node (`SLURM_TMPDIR`) for fast I/O.
- - **Exposes hooks** for custom bash code: `setup`/`setup_resume`, `on_run`/`on_run_resume`, and `teardown`.
- - Interrupts running worker process **before job time runs out**.
- - **Auto-saves results** back to `JOB_DIR`.
+ - **Freezes** source code and assets by copying to separate `$JOB_DIR`.
  - **Auto-submits** another job if current job times out.
- - **Restores** intermediate results and resumes running the `*_resume` hooks.
- - Supports **interactive** jobs for easy debugging.
+ - **Exposes hooks** for custom bash code: `setup`/`setup_resume`, `on_run`/`on_run_resume`, and `teardown`.
+ - [**Format job names**](#formatting) using parameters from config files.
+ - **Interactive** jobs supported for easy debugging.
 
 ## Installation
 
