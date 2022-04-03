@@ -96,3 +96,46 @@ easy_slurm.submit_job(
 This helps in automatically creating descriptive, human-readable job names.
 
 See documentation for more information and examples.
+
+### Config API
+
+Coming soon!
+
+Jobs and hyperparameters can be fully configured and composed using dictionaries or YAML files.
+
+```yaml
+# job.yaml
+
+job_dir: "$HOME/.local/share/easy_slurm/example-simple"
+src: "./src"
+assets: "./assets"
+dataset: "./data.tar.gz"
+on_run: "python main.py"
+on_run_resume: "python main.py --resume"
+setup: |
+  module load python/3.9
+  virtualenv --no-download "$SLURM_TMPDIR/env"
+  source "$SLURM_TMPDIR/env/bin/activate"
+  pip install --no-index --upgrade pip
+  pip install --no-index -r "$SLURM_TMPDIR/src/requirements.txt"
+teardown: |
+
+setup_resume: |
+  setup
+sbatch_options:
+  job-name: "example-simple"
+  account: "def-ibajic"
+  time: "0:03:00"
+  nodes: 1
+  ntasks-per-node: 1
+  cpus-per-task: 1
+  mem: "4000M"
+```
+
+```yaml
+# hparams.yaml
+
+hp:
+  batch_size: 16
+  lr: 1e-2
+```
