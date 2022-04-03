@@ -4,7 +4,10 @@ from typing import Any, Optional, Sequence
 
 
 def format_with_config(
-    template: str, config: dict[str, Any], _now: Optional[datetime] = None
+    template: str,
+    config: dict[str, Any],
+    silent: bool = False,
+    _now: Optional[datetime] = None,
 ) -> str:
     """Formats template using given config.
 
@@ -30,6 +33,8 @@ def format_with_config(
     Args:
         template: String to format.
         config: Key-value data to replace `"{key:format_spec}"` with.
+        silent: Silently pass-through `"{key:format_spec}"` if key not
+            in `config`.
 
     Returns:
         Formatted string.
@@ -55,7 +60,7 @@ def format_with_config(
         x
         for (l1, r1), (l2, _) in zip(spans[:-1], spans[1:])
         for x in [
-            _format_term(template[l1:r1], config, now=_now),
+            _format_term(template[l1:r1], config, now=_now, silent=silent),
             template[r1:l2],
         ]
     )
@@ -89,7 +94,9 @@ def dict_set(d: dict[str, Any], path_seq: Sequence[str], value: Any):
     d[path_seq[-1]] = value
 
 
-def _format_term(term: str, config: dict[str, Any], now: datetime) -> str:
+def _format_term(
+    term: str, config: dict[str, Any], now: datetime, silent: bool = False
+) -> str:
     """Formats term using given config.
 
     Examples:
@@ -107,16 +114,22 @@ def _format_term(term: str, config: dict[str, Any], now: datetime) -> str:
     if term == "":
         return ""
 
-    term = term[1:-1]  # trim surrounding {}
-
-    key, *opt = term.split(":", maxsplit=1)
+    key, *opt = term[1:-1].split(":", maxsplit=1)
 
     if key == "date":
         fmt = opt[0] if len(opt) != 0 else "%Y-%m-%d_%H-%M-%S_%3f"
         return _strftime(fmt, now)
 
     fmt = "{}" if len(opt) == 0 else f"{{:{opt[0]}}}"
-    return fmt.format(dict_get(config, key.split(".")))
+
+    try:
+        value = dict_get(config, key.split("."))
+    except KeyError as e:
+        if silent:
+            return term
+        raise e
+
+    return fmt.format(value)
 
 
 def _strftime(fmt: str, dt: datetime) -> str:
