@@ -7,6 +7,7 @@ from textwrap import dedent, indent
 from typing import Any
 
 from . import __version__
+from .format import format_with_config
 from .templates import (
     EXTRACT_RESULTS,
     JOB_INTERACTIVE_TEMPLATE,
@@ -17,7 +18,7 @@ from .templates import (
 
 
 def submit_job(
-    job_root: str,
+    job_dir: str,
     src: str,
     assets: str,
     dataset: str,
@@ -38,9 +39,8 @@ def submit_job(
     Creates job directory with frozen assets and submits job to slurm.
 
     Args:
-        job_root (str):
-            Path to directory where a time-stamped `$JOB_DIR` will be
-            created to store all job files including `src.tar`,
+        job_dir (str):
+            Path to directory to keep all job files including `src.tar`,
             `assets.tar`, auto-generated `job.sh`, and results.
             Note that the `dataset` will not be copied and will remain
             in its original path.
@@ -103,10 +103,8 @@ def submit_job(
         Path to the newly created job directory.
     """
     job_name = sbatch_options.get("job-name", "untitled")
-
-    job_root = _expand_path(job_root)
-    datestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S_%f")[:-3]
-    job_dir = f"{job_root}/{datestamp}_{job_name}"
+    job_dir = format_with_config(job_dir, {"job_name": job_name})
+    job_dir = _expand_path(job_dir)
     create_job_dir(job_dir, src, assets)
 
     job_path = f"{job_dir}/job.sh"

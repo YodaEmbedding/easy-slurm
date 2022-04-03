@@ -29,7 +29,7 @@ To submit a job, simply fill in the various parameters shown in the example belo
 import easy_slurm
 
 easy_slurm.submit_job(
-    job_root="$HOME/.local/share/easy_slurm/example-simple",
+    job_dir="$HOME/.local/share/easy_slurm/example-simple",
     src="./src",
     assets="./assets",
     dataset="./data.tar.gz",
@@ -57,7 +57,7 @@ easy_slurm.submit_job(
 )
 ```
 
-All job files will be kept in the `job_root` directory. Provide directory paths to `src` and `assets` -- these will be archived and copied to the `job_root` directory. Provide a file path to an archive containing the `dataset`. Also provide Bash code in the hooks, which will be run in the following order:
+All job files will be kept in the `job_dir` directory. Provide directory paths to `src` and `assets` -- these will be archived and copied to the `job_dir` directory. Provide a file path to an archive containing the `dataset`. Also provide Bash code in the hooks, which will be run in the following order:
 
 ```
 setup / setup_resume

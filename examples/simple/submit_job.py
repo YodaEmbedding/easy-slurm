@@ -1,7 +1,7 @@
 import easy_slurm
 
 easy_slurm.submit_job(
-    job_root="$HOME/.local/share/easy_slurm/example-simple",
+    job_dir="$HOME/.local/share/easy_slurm/example-simple",
     src="./src",
     assets="./assets",
     dataset="./data.tar.gz",
