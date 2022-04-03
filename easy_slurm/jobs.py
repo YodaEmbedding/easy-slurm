@@ -19,15 +19,16 @@ from .templates import (
 
 def submit_job(
     job_dir: str,
-    src: str,
-    assets: str,
-    dataset: str,
-    on_run: str,
-    on_run_resume: str,
-    setup: str,
-    setup_resume: str,
-    teardown: str,
-    sbatch_options: dict[str, Any],
+    *,
+    src: str = "",
+    assets: str = "",
+    dataset: str = "",
+    on_run: str = "",
+    on_run_resume: str = "",
+    setup: str = "",
+    setup_resume: str = "",
+    teardown: str = "",
+    sbatch_options: dict[str, Any] = {},
     cleanup_seconds: int = 120,
     submit: bool = True,
     interactive: bool = False,
@@ -223,8 +224,10 @@ def create_job_dir(
     assets = _expand_path(assets)
 
     os.makedirs(job_dir, exist_ok=True)
-    _create_tar_dir(src, f"{job_dir}/src.tar.gz", "src")
-    _create_tar_dir(assets, f"{job_dir}/assets.tar.gz", "assets")
+    if src != "":
+        _create_tar_dir(src, f"{job_dir}/src.tar.gz", "src")
+    if assets != "":
+        _create_tar_dir(assets, f"{job_dir}/assets.tar.gz", "assets")
 
     with open(f"{job_dir}/status", "w") as f:
         print("status=new", file=f)
@@ -262,7 +265,7 @@ def submit_job_dir(job_dir: str, interactive: bool):
 
 
 def _expand_path(path: str) -> str:
-    return os.path.abspath(os.path.expandvars(path))
+    return "" if path == "" else os.path.abspath(os.path.expandvars(path))
 
 
 def _create_tar_dir(src, dst, root_name):
