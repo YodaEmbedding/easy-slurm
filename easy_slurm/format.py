@@ -53,6 +53,8 @@ def format_with_config(
     """
     if _now is None:
         _now = datetime.now()
+
+    template = encode_pair("{{", "}}", template)
     matches = list(re.finditer(r"\{[^\}]*\}", template))
     spans = [match.span() for match in matches]
     spans = [(0, 0)] + spans + [(len(template), len(template))]
@@ -64,6 +66,7 @@ def format_with_config(
             template[r1:l2],
         ]
     )
+    formatted_result = decode_pair("{{", "}}", formatted_result)
     return formatted_result
 
 
@@ -92,6 +95,24 @@ def dict_set(d: dict[str, Any], path_seq: Sequence[str], value: Any):
     for key in path_seq[:-1]:
         d = d[key]
     d[path_seq[-1]] = value
+
+
+def encode_pair(left: str, right: str, s: str) -> str:
+    """Encodes a left/right pair using temporary characters."""
+    return (
+        s.replace("", "")
+        .replace(left, "\ufffe" * len(left))
+        .replace(right, "\uffff" * len(right))
+    )
+
+
+def decode_pair(left: str, right: str, s: str) -> str:
+    """Decodes a left/right pair using temporary characters."""
+    return (
+        s.replace("", "")
+        .replace("\ufffe" * len(left), left)
+        .replace("\uffff" * len(right), right)
+    )
 
 
 def _format_term(
