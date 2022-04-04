@@ -66,7 +66,6 @@ def format_with_config(
             template[r1:l2],
         ]
     )
-    print(formatted_result)
     formatted_result = decode_pair("{", "}", 2, formatted_result)
     return formatted_result
 
