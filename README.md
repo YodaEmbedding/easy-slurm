@@ -64,7 +64,7 @@ All job files will be kept in the `job_dir` directory. Provide directory paths t
 
 Full examples can be found [here](./examples), including a [simple example](./examples/simple) to run "training epochs" on a cluster.
 
-Jobs can also be fully configured using YAML files. See [`examples/simple_yaml`](./examples/simple-yaml).
+Jobs can also be fully configured using YAML files. See [`examples/simple_yaml`](./examples/simple_yaml).
 
 ```yaml
 job_dir: "$HOME/jobs/{date}-{job_name}"
