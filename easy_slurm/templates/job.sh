@@ -16,10 +16,7 @@ begin_func() {
   local func_name="$1"
   local start_dir="$2"
   echo ">>> Call $func_name at $(date)"
-  echo "Previous directory: $PWD"
-  echo "Changing directory to: $start_dir"
   cd "$start_dir" || exit 1
-  echo "Changed directory to: $PWD"
 }
 
 setup() {
