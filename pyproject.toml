@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "easy-slurm"
-version = "0.2.0"
+version = "0.2.1"
 description = "Easily manage and submit robust jobs to Slurm using Python and Bash."
 authors = ["Mateen Ulhaq <mulhaq2005@gmail.com>"]
 license = "MIT"

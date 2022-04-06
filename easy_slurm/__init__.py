@@ -35,7 +35,7 @@ If the current run successfully completes, `status` ends with
 `interrupting` and ends with `incomplete`.
 """
 
-__version__ = "0.2.0"
+__version__ = "0.2.1"
 
 from .format import format_with_config
 from .jobs import (
