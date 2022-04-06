@@ -1,12 +1,10 @@
 import easy_slurm
 
 easy_slurm.submit_job(
-    job_dir="$HOME/.local/share/easy_slurm/example-simple",
+    job_dir="$HOME/.local/share/easy_slurm/{date}-{job_name}",
     src="./src",
     assets="./assets",
     dataset="./data.tar.gz",
-    on_run="python main.py",
-    on_run_resume="python main.py --resume",
     setup="""
         module load python/3.9
         virtualenv --no-download "$SLURM_TMPDIR/env"
@@ -14,10 +12,13 @@ easy_slurm.submit_job(
         pip install --no-index --upgrade pip
         pip install --no-index -r "$SLURM_TMPDIR/src/requirements.txt"
     """,
-    teardown="""
-    """,
     setup_resume="""
         setup
+    """,
+    on_run="python main.py",
+    on_run_resume="python main.py --resume",
+    teardown="""
+        # Do any cleanup tasks here.
     """,
     sbatch_options={
         "job-name": "example-simple",

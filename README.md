@@ -26,7 +26,7 @@ To submit a job, simply fill in the various parameters shown in the example belo
 import easy_slurm
 
 easy_slurm.submit_job(
-    job_dir="$HOME/jobs/{date:%Y-%m-%d}-{job_name}",
+    job_dir="$HOME/jobs/{date}-{job_name}",
     src="./src",
     assets="./assets",
     dataset="./data.tar.gz",
@@ -42,8 +42,7 @@ easy_slurm.submit_job(
     on_run="python main.py",
     on_run_resume="python main.py --resume",
     teardown="""
-        # Copy files to results directory.
-        cp "$SLURM_TMPDIR/src/*.log" "$SLURM_TMPDIR/results/"
+        # Do any cleanup tasks here.
     """,
     sbatch_options={
         "job-name": "example-simple",
@@ -51,18 +50,45 @@ easy_slurm.submit_job(
         "time": "3:00:00",
         "nodes": "1",
     },
+    resubmit_limit=64,  # Automatic resubmission limit.
 )
 ```
 
 All job files will be kept in the `job_dir` directory. Provide directory paths to `src` and `assets` -- these will be archived and copied to the `job_dir` directory. Provide a file path to an archive containing the `dataset`. Also provide Bash code in the hooks, which will be run in the following order:
 
-```
-setup / setup_resume
-on_run / on_run_resume
-teardown
-```
+| First run: | Subsequent runs: |
+| ---------- | ---------------- |
+| `setup`    | `setup_resume`   |
+| `on_run`   | `on_run_resume`  |
+| `teardown` | `teardown`       |
 
 Full examples can be found [here](./examples), including a [simple example](./examples/simple) to run "training epochs" on a cluster.
+
+Jobs can also be fully configured using YAML files. See [`examples/simple_yaml`](./examples/simple-yaml).
+
+```yaml
+job_dir: "$HOME/jobs/{date}-{job_name}"
+src: "./src"
+assets: "./assets"
+dataset: "./data.tar.gz"
+setup: |
+  virtualenv "$SLURM_TMPDIR/env"
+  source "$SLURM_TMPDIR/env/bin/activate"
+  pip install -r "$SLURM_TMPDIR/src/requirements.txt"
+setup_resume: |
+  # Runs only on subsequent runs. Call setup and do anything else needed.
+  setup
+on_run: "python main.py"
+on_run_resume: "python main.py --resume"
+teardown: |
+  # Do any cleanup tasks here.
+sbatch_options:
+  job-name: "example-simple"
+  account: "your-username"
+  time: "3:00:00"
+  nodes: 1
+resubmit_limit: 64  # Automatic resubmission limit.
+```
 
 ### Formatting
 
@@ -93,46 +119,3 @@ easy_slurm.submit_job(
 This helps in automatically creating descriptive, human-readable job names.
 
 See documentation for more information and examples.
-
-### Config API
-
-Coming soon!
-
-Jobs and hyperparameters can be fully configured and composed using dictionaries or YAML files.
-
-```yaml
-# job.yaml
-
-job_dir: "$HOME/.local/share/easy_slurm/example-simple"
-src: "./src"
-assets: "./assets"
-dataset: "./data.tar.gz"
-on_run: "python main.py"
-on_run_resume: "python main.py --resume"
-setup: |
-  module load python/3.9
-  virtualenv --no-download "$SLURM_TMPDIR/env"
-  source "$SLURM_TMPDIR/env/bin/activate"
-  pip install --no-index --upgrade pip
-  pip install --no-index -r "$SLURM_TMPDIR/src/requirements.txt"
-teardown: |
-
-setup_resume: |
-  setup
-sbatch_options:
-  job-name: "example-simple"
-  account: "def-ibajic"
-  time: "0:03:00"
-  nodes: 1
-  ntasks-per-node: 1
-  cpus-per-task: 1
-  mem: "4000M"
-```
-
-```yaml
-# hparams.yaml
-
-hp:
-  batch_size: 16
-  lr: 1e-2
-```
