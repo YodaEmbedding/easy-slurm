@@ -1,7 +1,7 @@
 from argparse import ArgumentParser
 from time import sleep
 
-import tomlkit as toml
+import yaml
 
 
 def parse_args():
@@ -14,16 +14,16 @@ def parse_args():
 def main():
     args = parse_args()
 
-    with open("../assets/config.toml") as f:
-        config = toml.loads(f.read())
+    with open("../assets/hparams.yaml") as f:
+        hparams = yaml.safe_load(f)
 
     if args.resume:
-        with open("../results/state_dict.toml") as f:
-            state_dict = toml.loads(f.read())
+        with open("../results/state_dict.yaml") as f:
+            state_dict = yaml.safe_load(f)
     else:
         state_dict = {"epoch": 0}
 
-    max_epochs = config["epochs"]
+    max_epochs = hparams["hp"]["epochs"]
     start_epoch = state_dict["epoch"]
     end_epoch = min(max_epochs, start_epoch + 10)
 
@@ -31,8 +31,8 @@ def main():
         print(f"Epoch: {epoch}", flush=True)
         state_dict["epoch"] = epoch + 1
 
-        with open("../results/state_dict.toml", "w") as f:
-            f.write(toml.dumps(state_dict))
+        with open("../results/state_dict.yaml", "w") as f:
+            yaml.safe_dump(state_dict, f)
 
         sleep(5)
 
