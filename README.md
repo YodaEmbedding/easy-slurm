@@ -118,4 +118,6 @@ easy_slurm.submit_job(
 
 This helps in automatically creating descriptive, human-readable job names.
 
-See documentation for more information and examples.
+See the [documentation] for more information and examples.
+
+  [documentation]: https://yodaembedding.github.io/easy-slurm/
