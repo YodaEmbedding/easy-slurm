@@ -268,7 +268,7 @@ def _expand_path(path: str) -> str:
 
 
 def _create_tar_dir(src, dst, root_name):
-    transform = fr"s/^\./{root_name}/"
+    transform = rf"s/^\./{root_name}/"
     subprocess.run(
         ["tar", "czf", dst, "-C", src, ".", "--transform", transform],
         check=True,
