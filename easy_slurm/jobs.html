@@ -331,10 +331,12 @@ Default is <code class="docutils literal notranslate"><span class="pre">True</sp
 <li><p><strong>resubmit_limit</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – Maximum number of times to auto-submit a job for “resume”.
 (Not entirely unlike submitting a resume for a job.)
 Default is 64 resubmissions.</p></li>
-<li><p><strong>results_sync_method</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – <p>Choices: “rsync”, “symlink”, or “targz”.
-- rsync: Sync results directory via rsync.
-- symlink: Directly symlink results directory.
-- targz: Extract/archive results directory into .tar.gz.</p>
+<li><p><strong>results_sync_method</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – <p>Choices: “rsync”, “symlink”, or “targz”.</p>
+<ul>
+<li><p>rsync: Sync results directory via rsync.</p></li>
+<li><p>symlink: Directly symlink results directory.</p></li>
+<li><p>targz: Extract/archive results directory into .tar.gz.</p></li>
+</ul>
 <p>Default is <code class="docutils literal notranslate"><span class="pre">&quot;symlink&quot;</span></code>.</p>
 </p></li>
 </ul>
