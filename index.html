@@ -275,6 +275,11 @@ title="Print to PDF"
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#yaml">
+     YAML
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#formatting">
      Formatting
     </a>
@@ -318,6 +323,11 @@ title="Print to PDF"
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#yaml">
+     YAML
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#formatting">
      Formatting
     </a>
@@ -346,7 +356,7 @@ title="Print to PDF"
 <li><p><strong>Freezes</strong> source code and assets by copying to separate <code class="docutils literal notranslate"><span class="pre">$JOB_DIR</span></code>.</p></li>
 <li><p><strong>Auto-submits</strong> another job if current job times out.</p></li>
 <li><p><strong>Exposes hooks</strong> for custom bash code: <code class="docutils literal notranslate"><span class="pre">setup</span></code>/<code class="docutils literal notranslate"><span class="pre">setup_resume</span></code>, <code class="docutils literal notranslate"><span class="pre">on_run</span></code>/<code class="docutils literal notranslate"><span class="pre">on_run_resume</span></code>, and <code class="docutils literal notranslate"><span class="pre">teardown</span></code>.</p></li>
-<li><p><strong>`Format job names`_</strong> using parameters from config files.</p></li>
+<li><p><a class="reference external" href="#formatting"><strong>Format job names</strong></a> using parameters from config files.</p></li>
 <li><p><strong>Interactive</strong> jobs supported for easy debugging.</p></li>
 </ul>
 </section>
@@ -414,8 +424,10 @@ title="Print to PDF"
 </tr>
 </tbody>
 </table>
-<p><a class="reference external" href="./examples">Full examples</a> are available, including a <cite>simple example</cite> to run “training epochs” on a cluster.</p>
-<p>Jobs can also be fully configured using YAML files. See <a class="reference external" href="./examples/simple_yaml">examples/simple_yaml</a>.</p>
+<p><a class="reference external" href="https://github.com/YodaEmbedding/easy-slurm/tree/main/examples">Full examples</a> are available, including a <a class="reference external" href="https://github.com/YodaEmbedding/easy-slurm/tree/main/examples/simple">simple example</a> to run “training epochs” on a cluster.</p>
+<section id="yaml">
+<h3>YAML<a class="headerlink" href="#yaml" title="Permalink to this headline">#</a></h3>
+<p>Jobs can also be fully configured using YAML files. See <a class="reference external" href="https://github.com/YodaEmbedding/easy-slurm/tree/main/examples/simple_yaml">examples/simple_yaml</a>.</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">job_dir</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;$HOME/jobs/{date}-{job_name}&quot;</span>
 <span class="nt">src</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;./src&quot;</span>
 <span class="nt">assets</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;./assets&quot;</span>
@@ -439,6 +451,7 @@ title="Print to PDF"
 <span class="nt">resubmit_limit</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">64</span><span class="w">  </span><span class="c1"># Automatic resubmission limit.</span>
 </pre></div>
 </div>
+</section>
 <section id="formatting">
 <h3>Formatting<a class="headerlink" href="#formatting" title="Permalink to this headline">#</a></h3>
 <p>One useful feature is formatting paths using custom template strings:</p>

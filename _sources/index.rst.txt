@@ -13,10 +13,11 @@ Features
 - **Freezes** source code and assets by copying to separate ``$JOB_DIR``.
 - **Auto-submits** another job if current job times out.
 - **Exposes hooks** for custom bash code: ``setup``/``setup_resume``, ``on_run``/``on_run_resume``, and ``teardown``.
-- **`Format job names`_** using parameters from config files.
+- |Format job names|_ using parameters from config files.
 - **Interactive** jobs supported for easy debugging.
 
 .. _Format job names: #formatting
+.. |Format job names| replace:: **Format job names**
 .. .. _Interactive: #interactive-jobs
 
 
@@ -80,14 +81,17 @@ All job files will be kept in the ``job_dir`` directory. Provide directory paths
    * - ``teardown``
      - ``teardown``
 
-`Full examples`_ are available, including a `simple example` to run "training epochs" on a cluster.
+`Full examples`_ are available, including a `simple example`_ to run "training epochs" on a cluster.
 
-.. _`Full examples`: ./examples
-.. _`simple example`: ./examples/simple
+.. _`Full examples`: https://github.com/YodaEmbedding/easy-slurm/tree/main/examples
+.. _`simple example`: https://github.com/YodaEmbedding/easy-slurm/tree/main/examples/simple
+
+YAML
+~~~~
 
 Jobs can also be fully configured using YAML files. See `examples/simple_yaml`_.
 
-.. _`examples/simple_yaml`: ./examples/simple_yaml
+.. _`examples/simple_yaml`: https://github.com/YodaEmbedding/easy-slurm/tree/main/examples/simple_yaml
 
 .. code-block:: yaml
 
