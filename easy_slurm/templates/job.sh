@@ -97,7 +97,7 @@ extract_data() {
   tar xf "$JOB_DIR/src.tar.gz"
   mkdir -p "$SLURM_TMPDIR/datasets"
   cd "$SLURM_TMPDIR/datasets" || exit 1
-  tar xf "$DATASET_PATH"
+  [[ "$DATASET_PATH" == "" ]] || tar xf "$DATASET_PATH"
 }
 
 run_setup() {
