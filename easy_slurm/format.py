@@ -12,34 +12,39 @@ def format_with_config(
     """Formats template using given config.
 
     The template syntax is very similar to Python string templates.
-    One useful addition is that nested `config` keys can be accessed
+    One useful addition is that nested ``config`` keys can be accessed
     via "namespace" syntax.
     For instance,
-    ```python
-    "{nested.dict.key}"             ==> config["nested"]["dict"]["key"]
-    "{hp.batch_size:06}"            ==> "000032"
-    ```
+
+    .. code-block:: python
+
+        "{nested.dict.key}"             ==> config["nested"]["dict"]["key"]
+        "{hp.batch_size:06}"            ==> "000032"
 
     Additionally, some built-in keys have special formatting syntax.
-    If these keys are present in `config`, they will be ignored.
+    If these keys are present in ``config``, they will be ignored.
     For instance,
-    ```python
-    "{date:%Y-%m-%d}"               ==> "2020-01-01"
-    "{date:%Y-%m-%d %H:%M:%S.%3f}"  ==> "2020-01-01 00:00:03.141"
-    ```
+
+    .. code-block:: python
+
+        "{date:%Y-%m-%d}"               ==> "2020-01-01"
+        "{date:%Y-%m-%d %H:%M:%S.%3f}"  ==> "2020-01-01 00:00:03.141"
 
     See the examples below.
 
     Args:
         template: String to format.
-        config: Key-value data to replace `"{key:format_spec}"` with.
-        silent: Silently pass-through `"{key:format_spec}"` if key not
-            in `config`.
+        config: Key-value data to replace ``"{key:format_spec}"`` with.
+        silent: Silently pass-through ``"{key:format_spec}"`` if key not
+            in ``config``.
 
     Returns:
         Formatted string.
 
     Examples:
+
+    .. code-block:: python
+
         >>> from datetime import datetime
         >>> date_string = "2020-01-01 00:00:03.141592"
         >>> now = datetime.strptime(date_string, "%Y-%m-%d %H:%M:%S.%f")
@@ -74,6 +79,9 @@ def dict_get(d: dict[str, Any], path_seq: Sequence[str]) -> Any:
     """Gets dictionary element of key path.
 
     Examples:
+
+    .. code-block:: python
+
         >>> config = {"hp": {"batch_size": 32, "lr": 1e-2}}
         >>> dict_get(config, "hp.batch_size".split("."))
         32
@@ -87,6 +95,9 @@ def dict_set(d: dict[str, Any], path_seq: Sequence[str], value: Any):
     """Sets dictionary element of key path with given value.
 
     Examples:
+
+    .. code-block:: python
+
         >>> config = {"hp": {"batch_size": 32, "lr": 1e-2}}
         >>> dict_set(config, "hp.batch_size".split("."), 64)
         >>> config["hp"]["batch_size"]
@@ -121,6 +132,9 @@ def _format_term(
     """Formats term using given config.
 
     Examples:
+
+    .. code-block:: python
+
         >>> from datetime import datetime
         >>> date_string = "2020-01-01 00:00:03.141592"
         >>> now = datetime.strptime(date_string, "%Y-%m-%d %H:%M:%S.%f")
@@ -163,6 +177,9 @@ def _strftime(fmt: str, dt: datetime) -> str:
     .. _so: https://stackoverflow.com/a/71715115/365102
 
     Examples:
+
+    .. code-block:: python
+
         >>> from datetime import datetime
         >>> date_string = "2020-01-01 00:00:03.141592"
         >>> dt = datetime.strptime(date_string, "%Y-%m-%d %H:%M:%S.%f")

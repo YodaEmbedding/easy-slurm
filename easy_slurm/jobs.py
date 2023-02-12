@@ -40,22 +40,22 @@ def submit_job(
 
     Args:
         job_dir (str):
-            Path to directory to keep all job files including `src.tar`,
-            `assets.tar`, auto-generated `job.sh`, and results.
-            Note that the `dataset` will not be copied and will remain
-            in its original path.
+            Path to directory to keep all job files including
+            ``src.tar``, ``assets.tar``, auto-generated ``job.sh``, and
+            results. Note that the ``dataset`` will not be copied and
+            will remain in its original path.
         src (str):
             Path to directory containing only source code.
-            These will be archived in `$JOB_DIR/src.tar` and
-            extracted during job run into `$SLURM_TMPDIR/src`.
+            These will be archived in ``$JOB_DIR/src.tar`` and
+            extracted during job run into ``$SLURM_TMPDIR/src``.
         assets (str):
             Path to directory containing additional assets.
-            These will be archived in `$JOB_DIR/assets.tar` and
-            extracted during job run into `$SLURM_TMPDIR/assets`.
+            These will be archived in ``$JOB_DIR/assets.tar`` and
+            extracted during job run into ``$SLURM_TMPDIR/assets``.
         dataset (str):
-            Path to `.tar` archive of dataset. This will be copied and
+            Path to ``.tar`` archive of dataset. This will be copied and
             extracted on the local filesystem of the compute node,
-            `$SLURM_TMPDIR`.
+            ``$SLURM_TMPDIR``.
         on_run (str):
             Bash code executed in "on_run" stage, but only for new jobs
             that are running for the first time.
@@ -72,8 +72,9 @@ def submit_job(
         setup_resume (str):
             Bash code executed in "setup" stage, but only for jobs that
             are resuming from previous incomplete runs.
-            To reuse the code from `setup`, simply set this to
-            `"setup"`, which calls the code inside the `setup` function.
+            To reuse the code from ``setup``, simply set this to
+            ``"setup"``, which calls the code inside the ``setup``
+            function.
         teardown (str):
             Bash code executed in "teardown" stage.
         sbatch_options (dict[str, Any]):
@@ -83,21 +84,23 @@ def submit_job(
             tasks (teardown, save_results, auto-schedule new job).
             Default is 120 seconds.
         submit (bool):
-            Submit created job to scheduler. Set this to `False` if you
-            are manually submitting the created `$JOB_DIR` later.
-            Default is `True`.
+            Submit created job to scheduler. Set this to ``False`` if
+            you are manually submitting the created ``$JOB_DIR`` later.
+            Default is ``True``.
         interactive (bool):
-            Run as a blocking interactive job. Default is `False`.
+            Run as a blocking interactive job. Default is ``False``.
         resubmit_limit (int):
             Maximum number of times to auto-submit a job for "resume".
             (Not entirely unlike submitting a resume for a job.)
             Default is 64 resubmissions.
         results_sync_method (str):
             Choices: "rsync", "symlink", or "targz".
-             - rsync: Sync results directory via rsync.
-             - symlink: Directly symlink results directory.
-             - targz: Extract/archive results directory into .tar.gz.
-            Default is `"symlink"`.
+
+            - rsync: Sync results directory via rsync.
+            - symlink: Directly symlink results directory.
+            - targz: Extract/archive results directory into .tar.gz.
+
+            Default is ``"symlink"``.
 
     Returns:
         Path to the newly created job directory.
@@ -235,10 +238,10 @@ def create_job_dir(
 
 
 def submit_job_dir(job_dir: str, interactive: bool):
-    """Submits a `$JOB_DIR` created by easy_slurm to slurm.
+    """Submits a ``$JOB_DIR`` created by easy_slurm to slurm.
 
-    Note that `submit_job` already does this for the user,
-    except when it is called with `submit=False`.
+    Note that ``submit_job`` already does this for the user,
+    except when it is called with ``submit=False``.
     """
     if interactive:
         job_interactive_path = f"{job_dir}/job_interactive.sh"
