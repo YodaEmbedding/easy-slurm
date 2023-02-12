@@ -1,0 +1,554 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>easy_slurm.jobs &#8212; Easy Slurm</title>
+    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" href="../../_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
+    
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+<!-- Checkboxes to toggle the left sidebar -->
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
+<label class="overlay overlay-navbar" for="__navigation">
+    <div class="visually-hidden">Toggle navigation sidebar</div>
+</label>
+<!-- Checkboxes to toggle the in-page toc -->
+<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
+<label class="overlay overlay-pagetoc" for="__page-toc">
+    <div class="visually-hidden">Toggle in-page Table of Contents</div>
+</label>
+<!-- Headers at the top -->
+<div class="announcement header-item noprint"></div>
+<div class="header header-item noprint"></div>
+
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<!-- Sidebar -->
+<div class="bd-sidebar noprint" id="site-navigation">
+    <div class="bd-sidebar__content">
+        <div class="bd-sidebar__top"><div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="../../index.html">
+      
+      
+      
+      <h1 class="site-logo" id="site-title">Easy Slurm</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        <ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../index.html">
+   Home
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Guides
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../tutorials/installation.html">
+   Installation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../tutorials/full.html">
+   Walkthrough
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Easy Slurm API
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../easy_slurm/jobs.html">
+   easy_slurm.jobs
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../easy_slurm/format.html">
+   easy_slurm.format
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Development
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference external" href="https://github.com/YodaEmbedding/easy-slurm/">
+   Github repository
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav></div>
+        <div class="bd-sidebar__bottom">
+             <!-- To handle the deprecated key -->
+            
+        </div>
+    </div>
+    <div id="rtd-footer-container"></div>
+</div>
+
+
+          
+
+
+          
+<!-- A tiny helper pixel to detect if we've scrolled -->
+<div class="sbt-scroll-pixel-helper"></div>
+<!-- Main content -->
+<div class="col py-0 content-container">
+    
+    <div class="header-article row sticky-top noprint">
+        
+
+
+
+<div class="col py-1 d-flex header-article-main">
+    <div class="header-article__left">
+        
+        <label for="__navigation"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="right"
+title="Toggle navigation"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-bars"></i>
+  </span>
+
+</label>
+
+        
+    </div>
+    <div class="header-article__right"><a href="https://github.com/YodaEmbedding/easy-slurm/"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="bottom"
+title="Source repository"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+    </div>
+</div>
+
+<!-- Table of contents -->
+<div class="col-md-3 bd-toc show noprint">
+</div>
+    </div>
+    <div class="article row">
+        <div class="col pl-md-3 pl-lg-5 content-container">
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1></h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                    </div>
+                </div>
+            </div>
+            <main id="main-content" role="main">
+                
+              <div>
+                
+  <h1>Source code for easy_slurm.jobs</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">stat</span>
+<span class="kn">import</span> <span class="nn">subprocess</span>
+<span class="kn">from</span> <span class="nn">textwrap</span> <span class="kn">import</span> <span class="n">dedent</span><span class="p">,</span> <span class="n">indent</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">__version__</span>
+<span class="kn">from</span> <span class="nn">.format</span> <span class="kn">import</span> <span class="n">format_with_config</span>
+<span class="kn">from</span> <span class="nn">.templates</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">EXTRACT_RESULTS</span><span class="p">,</span>
+    <span class="n">JOB_INTERACTIVE_TEMPLATE</span><span class="p">,</span>
+    <span class="n">JOB_SCRIPT_TEMPLATE</span><span class="p">,</span>
+    <span class="n">SAVE_RESULTS</span><span class="p">,</span>
+    <span class="n">VARS_TEMPLATE</span><span class="p">,</span>
+<span class="p">)</span>
+
+
+<div class="viewcode-block" id="submit_job"><a class="viewcode-back" href="../../easy_slurm/jobs.html#easy_slurm.jobs.submit_job">[docs]</a><span class="k">def</span> <span class="nf">submit_job</span><span class="p">(</span>
+    <span class="n">job_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">src</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="n">assets</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="n">dataset</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="n">on_run</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="n">on_run_resume</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="n">setup</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="n">setup_resume</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="n">teardown</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="n">sbatch_options</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{},</span>
+    <span class="n">cleanup_seconds</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">120</span><span class="p">,</span>
+    <span class="n">submit</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">interactive</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">resubmit_limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">64</span><span class="p">,</span>
+    <span class="n">results_sync_method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;symlink&quot;</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Submits job.</span>
+
+<span class="sd">    Creates job directory with frozen assets and submits job to slurm.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        job_dir (str):</span>
+<span class="sd">            Path to directory to keep all job files including</span>
+<span class="sd">            ``src.tar``, ``assets.tar``, auto-generated ``job.sh``, and</span>
+<span class="sd">            results. Note that the ``dataset`` will not be copied and</span>
+<span class="sd">            will remain in its original path.</span>
+<span class="sd">        src (str):</span>
+<span class="sd">            Path to directory containing only source code.</span>
+<span class="sd">            These will be archived in ``$JOB_DIR/src.tar`` and</span>
+<span class="sd">            extracted during job run into ``$SLURM_TMPDIR/src``.</span>
+<span class="sd">        assets (str):</span>
+<span class="sd">            Path to directory containing additional assets.</span>
+<span class="sd">            These will be archived in ``$JOB_DIR/assets.tar`` and</span>
+<span class="sd">            extracted during job run into ``$SLURM_TMPDIR/assets``.</span>
+<span class="sd">        dataset (str):</span>
+<span class="sd">            Path to ``.tar`` archive of dataset. This will be copied and</span>
+<span class="sd">            extracted on the local filesystem of the compute node,</span>
+<span class="sd">            ``$SLURM_TMPDIR``.</span>
+<span class="sd">        on_run (str):</span>
+<span class="sd">            Bash code executed in &quot;on_run&quot; stage, but only for new jobs</span>
+<span class="sd">            that are running for the first time.</span>
+<span class="sd">            Must be a single command only.</span>
+<span class="sd">            Optionally, the command may gracefully handle interrupts.</span>
+<span class="sd">        on_run_resume (str):</span>
+<span class="sd">            Bash code executed in &quot;on_run&quot; stage, but only for jobs that</span>
+<span class="sd">            are resuming from previous incomplete runs.</span>
+<span class="sd">            Must be a single command only.</span>
+<span class="sd">            Optionally, the command may gracefully handle interrupts.</span>
+<span class="sd">        setup (str):</span>
+<span class="sd">            Bash code executed in &quot;setup&quot; stage, but only for new jobs</span>
+<span class="sd">            that are running for the first time.</span>
+<span class="sd">        setup_resume (str):</span>
+<span class="sd">            Bash code executed in &quot;setup&quot; stage, but only for jobs that</span>
+<span class="sd">            are resuming from previous incomplete runs.</span>
+<span class="sd">            To reuse the code from ``setup``, simply set this to</span>
+<span class="sd">            ``&quot;setup&quot;``, which calls the code inside the ``setup``</span>
+<span class="sd">            function.</span>
+<span class="sd">        teardown (str):</span>
+<span class="sd">            Bash code executed in &quot;teardown&quot; stage.</span>
+<span class="sd">        sbatch_options (dict[str, Any]):</span>
+<span class="sd">            Dictionary of options to pass to sbatch.</span>
+<span class="sd">        cleanup_seconds (int):</span>
+<span class="sd">            Interrupts a job n seconds before timeout to run cleanup</span>
+<span class="sd">            tasks (teardown, save_results, auto-schedule new job).</span>
+<span class="sd">            Default is 120 seconds.</span>
+<span class="sd">        submit (bool):</span>
+<span class="sd">            Submit created job to scheduler. Set this to ``False`` if</span>
+<span class="sd">            you are manually submitting the created ``$JOB_DIR`` later.</span>
+<span class="sd">            Default is ``True``.</span>
+<span class="sd">        interactive (bool):</span>
+<span class="sd">            Run as a blocking interactive job. Default is ``False``.</span>
+<span class="sd">        resubmit_limit (int):</span>
+<span class="sd">            Maximum number of times to auto-submit a job for &quot;resume&quot;.</span>
+<span class="sd">            (Not entirely unlike submitting a resume for a job.)</span>
+<span class="sd">            Default is 64 resubmissions.</span>
+<span class="sd">        results_sync_method (str):</span>
+<span class="sd">            Choices: &quot;rsync&quot;, &quot;symlink&quot;, or &quot;targz&quot;.</span>
+<span class="sd">            - rsync: Sync results directory via rsync.</span>
+<span class="sd">            - symlink: Directly symlink results directory.</span>
+<span class="sd">            - targz: Extract/archive results directory into .tar.gz.</span>
+
+<span class="sd">            Default is ``&quot;symlink&quot;``.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Path to the newly created job directory.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">job_name</span> <span class="o">=</span> <span class="n">sbatch_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;job-name&quot;</span><span class="p">,</span> <span class="s2">&quot;untitled&quot;</span><span class="p">)</span>
+    <span class="n">job_dir</span> <span class="o">=</span> <span class="n">format_with_config</span><span class="p">(</span><span class="n">job_dir</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;job_name&quot;</span><span class="p">:</span> <span class="n">job_name</span><span class="p">})</span>
+    <span class="n">job_dir</span> <span class="o">=</span> <span class="n">_expand_path</span><span class="p">(</span><span class="n">job_dir</span><span class="p">)</span>
+    <span class="n">create_job_dir</span><span class="p">(</span><span class="n">job_dir</span><span class="p">,</span> <span class="n">src</span><span class="p">,</span> <span class="n">assets</span><span class="p">)</span>
+
+    <span class="n">job_path</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">job_dir</span><span class="si">}</span><span class="s2">/job.sh&quot;</span>
+    <span class="n">job_script_str</span> <span class="o">=</span> <span class="n">create_job_script_source</span><span class="p">(</span>
+        <span class="n">sbatch_options</span><span class="o">=</span><span class="n">sbatch_options</span><span class="p">,</span>
+        <span class="n">on_run</span><span class="o">=</span><span class="n">on_run</span><span class="p">,</span>
+        <span class="n">on_run_resume</span><span class="o">=</span><span class="n">on_run_resume</span><span class="p">,</span>
+        <span class="n">setup</span><span class="o">=</span><span class="n">setup</span><span class="p">,</span>
+        <span class="n">setup_resume</span><span class="o">=</span><span class="n">setup_resume</span><span class="p">,</span>
+        <span class="n">teardown</span><span class="o">=</span><span class="n">teardown</span><span class="p">,</span>
+        <span class="n">job_dir</span><span class="o">=</span><span class="n">job_dir</span><span class="p">,</span>
+        <span class="n">dataset</span><span class="o">=</span><span class="n">dataset</span><span class="p">,</span>
+        <span class="n">cleanup_seconds</span><span class="o">=</span><span class="n">cleanup_seconds</span><span class="p">,</span>
+        <span class="n">resubmit_limit</span><span class="o">=</span><span class="n">resubmit_limit</span><span class="p">,</span>
+        <span class="n">results_sync_method</span><span class="o">=</span><span class="n">results_sync_method</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">_write_script</span><span class="p">(</span><span class="n">job_path</span><span class="p">,</span> <span class="n">job_script_str</span><span class="p">)</span>
+
+    <span class="n">job_interactive_path</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">job_dir</span><span class="si">}</span><span class="s2">/job_interactive.sh&quot;</span>
+    <span class="n">job_interactive_script_str</span> <span class="o">=</span> <span class="n">create_job_interactive_script_source</span><span class="p">(</span>
+        <span class="n">sbatch_options</span><span class="o">=</span><span class="n">sbatch_options</span><span class="p">,</span>
+        <span class="n">job_path</span><span class="o">=</span><span class="n">job_path</span><span class="p">,</span>
+        <span class="n">job_dir</span><span class="o">=</span><span class="n">job_dir</span><span class="p">,</span>
+        <span class="n">cleanup_seconds</span><span class="o">=</span><span class="n">cleanup_seconds</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">_write_script</span><span class="p">(</span><span class="n">job_interactive_path</span><span class="p">,</span> <span class="n">job_interactive_script_str</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">submit</span><span class="p">:</span>
+        <span class="n">submit_job_dir</span><span class="p">(</span><span class="n">job_dir</span><span class="p">,</span> <span class="n">interactive</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">job_dir</span></div>
+
+
+<div class="viewcode-block" id="create_job_script_source"><a class="viewcode-back" href="../../easy_slurm/jobs.html#easy_slurm.jobs.create_job_script_source">[docs]</a><span class="k">def</span> <span class="nf">create_job_script_source</span><span class="p">(</span>
+    <span class="n">sbatch_options</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
+    <span class="n">on_run</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">on_run_resume</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">setup</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">setup_resume</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">teardown</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">job_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">dataset</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">cleanup_seconds</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">resubmit_limit</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">results_sync_method</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns source for job script.&quot;&quot;&quot;</span>
+    <span class="n">job_dir</span> <span class="o">=</span> <span class="n">_expand_path</span><span class="p">(</span><span class="n">job_dir</span><span class="p">)</span>
+    <span class="n">dataset</span> <span class="o">=</span> <span class="n">_expand_path</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span>
+
+    <span class="n">vars_str</span> <span class="o">=</span> <span class="n">VARS_TEMPLATE</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+        <span class="n">easy_slurm_version</span><span class="o">=</span><span class="n">__version__</span><span class="p">,</span>
+        <span class="n">job_dir</span><span class="o">=</span><span class="n">job_dir</span><span class="p">,</span>
+        <span class="n">dataset_path</span><span class="o">=</span><span class="n">dataset</span><span class="p">,</span>
+        <span class="n">resubmit_limit</span><span class="o">=</span><span class="n">resubmit_limit</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">extract_results</span> <span class="o">=</span> <span class="n">EXTRACT_RESULTS</span><span class="p">[</span><span class="n">results_sync_method</span><span class="p">]</span>
+    <span class="n">save_results</span> <span class="o">=</span> <span class="n">SAVE_RESULTS</span><span class="p">[</span><span class="n">results_sync_method</span><span class="p">]</span>
+
+    <span class="n">setup</span> <span class="o">=</span> <span class="n">_fix_indent</span><span class="p">(</span><span class="n">setup</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">setup_resume</span> <span class="o">=</span> <span class="n">_fix_indent</span><span class="p">(</span><span class="n">setup_resume</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">teardown</span> <span class="o">=</span> <span class="n">_fix_indent</span><span class="p">(</span><span class="n">teardown</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">extract_results</span> <span class="o">=</span> <span class="n">_fix_indent</span><span class="p">(</span><span class="n">extract_results</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">save_results</span> <span class="o">=</span> <span class="n">_fix_indent</span><span class="p">(</span><span class="n">save_results</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">fix_quotes</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">_quote_single_quotes</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+    <span class="n">on_run</span> <span class="o">=</span> <span class="n">fix_quotes</span><span class="p">(</span><span class="n">on_run</span><span class="p">)</span>
+    <span class="n">on_run_resume</span> <span class="o">=</span> <span class="n">fix_quotes</span><span class="p">(</span><span class="n">on_run_resume</span><span class="p">)</span>
+
+    <span class="n">sbatch_options_str</span> <span class="o">=</span> <span class="n">_sbatch_options_to_str</span><span class="p">(</span>
+        <span class="n">sbatch_options</span><span class="p">,</span> <span class="n">job_dir</span><span class="p">,</span> <span class="n">cleanup_seconds</span>
+    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">JOB_SCRIPT_TEMPLATE</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+        <span class="n">sbatch_options_str</span><span class="o">=</span><span class="n">sbatch_options_str</span><span class="p">,</span>
+        <span class="n">vars_str</span><span class="o">=</span><span class="n">vars_str</span><span class="p">,</span>
+        <span class="n">on_run</span><span class="o">=</span><span class="n">on_run</span><span class="p">,</span>
+        <span class="n">on_run_resume</span><span class="o">=</span><span class="n">on_run_resume</span><span class="p">,</span>
+        <span class="n">setup</span><span class="o">=</span><span class="n">setup</span><span class="p">,</span>
+        <span class="n">setup_resume</span><span class="o">=</span><span class="n">setup_resume</span><span class="p">,</span>
+        <span class="n">teardown</span><span class="o">=</span><span class="n">teardown</span><span class="p">,</span>
+        <span class="n">extract_results</span><span class="o">=</span><span class="n">extract_results</span><span class="p">,</span>
+        <span class="n">save_results</span><span class="o">=</span><span class="n">save_results</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="create_job_interactive_script_source"><a class="viewcode-back" href="../../easy_slurm/jobs.html#easy_slurm.jobs.create_job_interactive_script_source">[docs]</a><span class="k">def</span> <span class="nf">create_job_interactive_script_source</span><span class="p">(</span>
+    <span class="n">sbatch_options</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
+    <span class="n">job_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">job_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">cleanup_seconds</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns source for job script.&quot;&quot;&quot;</span>
+    <span class="n">job_dir</span> <span class="o">=</span> <span class="n">_expand_path</span><span class="p">(</span><span class="n">job_dir</span><span class="p">)</span>
+    <span class="n">job_path</span> <span class="o">=</span> <span class="n">_expand_path</span><span class="p">(</span><span class="n">job_path</span><span class="p">)</span>
+
+    <span class="n">sbatch_options_str</span> <span class="o">=</span> <span class="n">_sbatch_options_to_str</span><span class="p">(</span>
+        <span class="n">sbatch_options</span><span class="p">,</span> <span class="n">job_dir</span><span class="p">,</span> <span class="n">cleanup_seconds</span>
+    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">JOB_INTERACTIVE_TEMPLATE</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+        <span class="n">sbatch_options_str</span><span class="o">=</span><span class="n">sbatch_options_str</span><span class="p">,</span>
+        <span class="n">job_path</span><span class="o">=</span><span class="n">job_path</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="create_job_dir"><a class="viewcode-back" href="../../easy_slurm/jobs.html#easy_slurm.jobs.create_job_dir">[docs]</a><span class="k">def</span> <span class="nf">create_job_dir</span><span class="p">(</span>
+    <span class="n">job_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">src</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">assets</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Creates job directory and freezes all necessary files.&quot;&quot;&quot;</span>
+    <span class="n">job_dir</span> <span class="o">=</span> <span class="n">_expand_path</span><span class="p">(</span><span class="n">job_dir</span><span class="p">)</span>
+    <span class="n">src</span> <span class="o">=</span> <span class="n">_expand_path</span><span class="p">(</span><span class="n">src</span><span class="p">)</span>
+    <span class="n">assets</span> <span class="o">=</span> <span class="n">_expand_path</span><span class="p">(</span><span class="n">assets</span><span class="p">)</span>
+
+    <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">job_dir</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">src</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+        <span class="n">_create_tar_dir</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">job_dir</span><span class="si">}</span><span class="s2">/src.tar.gz&quot;</span><span class="p">,</span> <span class="s2">&quot;src&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">assets</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+        <span class="n">_create_tar_dir</span><span class="p">(</span><span class="n">assets</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">job_dir</span><span class="si">}</span><span class="s2">/assets.tar.gz&quot;</span><span class="p">,</span> <span class="s2">&quot;assets&quot;</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">job_dir</span><span class="si">}</span><span class="s2">/status&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;status=new&quot;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">f</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;easy_slurm_version=</span><span class="si">{</span><span class="n">__version__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">f</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;resubmit_count=0&quot;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">f</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="submit_job_dir"><a class="viewcode-back" href="../../easy_slurm/jobs.html#easy_slurm.jobs.submit_job_dir">[docs]</a><span class="k">def</span> <span class="nf">submit_job_dir</span><span class="p">(</span><span class="n">job_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">interactive</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Submits a ``$JOB_DIR`` created by easy_slurm to slurm.</span>
+
+<span class="sd">    Note that ``submit_job`` already does this for the user,</span>
+<span class="sd">    except when it is called with ``submit=False``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">interactive</span><span class="p">:</span>
+        <span class="n">job_interactive_path</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">job_dir</span><span class="si">}</span><span class="s2">/job_interactive.sh&quot;</span>
+        <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+            <span class="p">[</span><span class="s2">&quot;srun&quot;</span><span class="p">,</span> <span class="s2">&quot;--pty&quot;</span><span class="p">,</span> <span class="s2">&quot;bash&quot;</span><span class="p">,</span> <span class="s2">&quot;--init-file&quot;</span><span class="p">,</span> <span class="n">job_interactive_path</span><span class="p">],</span>
+            <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">text</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">job_path</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">job_dir</span><span class="si">}</span><span class="s2">/job.sh&quot;</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+            <span class="p">[</span><span class="s2">&quot;sbatch&quot;</span><span class="p">,</span> <span class="n">job_path</span><span class="p">],</span>
+            <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">capture_output</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">text</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="n">m</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;^Submitted batch job (\d+)$&quot;</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">stdout</span><span class="p">)</span>
+        <span class="n">job_id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">job_dir</span><span class="si">}</span><span class="s2">/job_ids&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">job_id</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">f</span><span class="p">)</span></div>
+
+
+<span class="k">def</span> <span class="nf">_expand_path</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">return</span> <span class="s2">&quot;&quot;</span> <span class="k">if</span> <span class="n">path</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span> <span class="k">else</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expandvars</span><span class="p">(</span><span class="n">path</span><span class="p">))</span>
+
+
+<span class="k">def</span> <span class="nf">_create_tar_dir</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">dst</span><span class="p">,</span> <span class="n">root_name</span><span class="p">):</span>
+    <span class="n">transform</span> <span class="o">=</span> <span class="sa">rf</span><span class="s2">&quot;s/^\./</span><span class="si">{</span><span class="n">root_name</span><span class="si">}</span><span class="s2">/&quot;</span>
+    <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+        <span class="p">[</span><span class="s2">&quot;tar&quot;</span><span class="p">,</span> <span class="s2">&quot;czf&quot;</span><span class="p">,</span> <span class="n">dst</span><span class="p">,</span> <span class="s2">&quot;-C&quot;</span><span class="p">,</span> <span class="n">src</span><span class="p">,</span> <span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="s2">&quot;--transform&quot;</span><span class="p">,</span> <span class="n">transform</span><span class="p">],</span>
+        <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_write_script</span><span class="p">(</span><span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">f</span><span class="p">)</span>
+
+    <span class="n">st</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">stat</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">chmod</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">st</span><span class="o">.</span><span class="n">st_mode</span> <span class="o">|</span> <span class="n">stat</span><span class="o">.</span><span class="n">S_IEXEC</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_sbatch_options_to_str</span><span class="p">(</span>
+    <span class="n">sbatch_options</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">job_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">cleanup_seconds</span><span class="p">:</span> <span class="nb">int</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="n">sbatch_options</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">sbatch_options</span><span class="p">)</span>
+    <span class="n">sbatch_options</span><span class="p">[</span><span class="s2">&quot;output&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">job_dir</span><span class="si">}</span><span class="s2">/slurm_jobid%j_%x.out&quot;</span>
+    <span class="n">sbatch_options</span><span class="p">[</span><span class="s2">&quot;signal&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;B:USR1@</span><span class="si">{</span><span class="n">cleanup_seconds</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="k">return</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;#SBATCH --</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">sbatch_options</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
+
+
+<span class="k">def</span> <span class="nf">_quote_single_quotes</span><span class="p">(</span><span class="n">s</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Replaces &#39; with &#39;&quot;&#39;&quot;&#39;.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;&#39;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;&quot;&#39;&quot;&#39;&quot;&#39;&quot;&quot;&quot;</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_fix_indent</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">level</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">indent</span><span class="p">(</span><span class="n">dedent</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)),</span> <span class="s2">&quot;  &quot;</span> <span class="o">*</span> <span class="n">level</span><span class="p">)</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+
+              </div>
+              
+            </main>
+            <footer class="footer-article noprint">
+                
+    <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+</div>
+            </footer>
+        </div>
+    </div>
+    <div class="footer-content row">
+        <footer class="col footer"><p>
+  
+    By Mateen Ulhaq<br/>
+  
+      &copy; Copyright 2023, Mateen Ulhaq.<br/>
+</p>
+        </footer>
+    </div>
+    
+</div>
+
+
+      </div>
+    </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+
+
+  </body>
+</html>

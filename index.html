@@ -1,0 +1,519 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Easy Slurm &#8212; Easy Slurm</title>
+    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
+    
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Installation" href="tutorials/installation.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+<!-- Checkboxes to toggle the left sidebar -->
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
+<label class="overlay overlay-navbar" for="__navigation">
+    <div class="visually-hidden">Toggle navigation sidebar</div>
+</label>
+<!-- Checkboxes to toggle the in-page toc -->
+<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
+<label class="overlay overlay-pagetoc" for="__page-toc">
+    <div class="visually-hidden">Toggle in-page Table of Contents</div>
+</label>
+<!-- Headers at the top -->
+<div class="announcement header-item noprint"></div>
+<div class="header header-item noprint"></div>
+
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<!-- Sidebar -->
+<div class="bd-sidebar noprint" id="site-navigation">
+    <div class="bd-sidebar__content">
+        <div class="bd-sidebar__top"><div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="#">
+      
+      
+      
+      <h1 class="site-logo" id="site-title">Easy Slurm</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        <ul class="current nav bd-sidenav">
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   Home
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Guides
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="tutorials/installation.html">
+   Installation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="tutorials/full.html">
+   Walkthrough
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Easy Slurm API
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="easy_slurm/jobs.html">
+   easy_slurm.jobs
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="easy_slurm/format.html">
+   easy_slurm.format
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Development
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference external" href="https://github.com/YodaEmbedding/easy-slurm/">
+   Github repository
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav></div>
+        <div class="bd-sidebar__bottom">
+             <!-- To handle the deprecated key -->
+            
+        </div>
+    </div>
+    <div id="rtd-footer-container"></div>
+</div>
+
+
+          
+
+
+          
+<!-- A tiny helper pixel to detect if we've scrolled -->
+<div class="sbt-scroll-pixel-helper"></div>
+<!-- Main content -->
+<div class="col py-0 content-container">
+    
+    <div class="header-article row sticky-top noprint">
+        
+
+
+
+<div class="col py-1 d-flex header-article-main">
+    <div class="header-article__left">
+        
+        <label for="__navigation"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="right"
+title="Toggle navigation"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-bars"></i>
+  </span>
+
+</label>
+
+        
+    </div>
+    <div class="header-article__right"><a href="https://github.com/YodaEmbedding/easy-slurm/"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="bottom"
+title="Source repository"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+<div class="menu-dropdown menu-dropdown-download-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Download this page">
+      <i class="fas fa-download"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="_sources/index.rst.txt"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Download source file"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="headerbtn__text-container">.rst</span>
+</a>
+
+      </li>
+      
+      <li>
+        
+<button onclick="printPdf(this)"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="left"
+title="Print to PDF"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="headerbtn__text-container">.pdf</span>
+</button>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+<label for="__page-toc"
+  class="headerbtn headerbtn-page-toc"
+  
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-list"></i>
+  </span>
+
+</label>
+
+    </div>
+</div>
+
+<!-- Table of contents -->
+<div class="col-md-3 bd-toc show noprint">
+    <div class="tocsection onthispage pt-5 pb-3">
+        <i class="fas fa-list"></i> Contents
+    </div>
+    <nav id="bd-toc-nav" aria-label="Page">
+        <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#features">
+   Features
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#installation">
+   Installation
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#usage">
+   Usage
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#formatting">
+     Formatting
+    </a>
+    <ul class="nav section-nav flex-column">
+    </ul>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+    </nav>
+</div>
+    </div>
+    <div class="article row">
+        <div class="col pl-md-3 pl-lg-5 content-container">
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>Easy Slurm</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#features">
+   Features
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#installation">
+   Installation
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#usage">
+   Usage
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#formatting">
+     Formatting
+    </a>
+    <ul class="nav section-nav flex-column">
+    </ul>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            <main id="main-content" role="main">
+                
+              <div>
+                
+  <section id="easy-slurm">
+<h1>Easy Slurm<a class="headerlink" href="#easy-slurm" title="Permalink to this headline">#</a></h1>
+<a class="reference external image-reference" href="https://github.com/YodaEmbedding/easy-slurm/blob/master/LICENSE"><img alt="https://img.shields.io/github/license/YodaEmbedding/easy-slurm?color=blue" src="https://img.shields.io/github/license/YodaEmbedding/easy-slurm?color=blue" /></a>
+<p>Easy Slurm allows you to easily manage and submit robust jobs to Slurm using Python and Bash.</p>
+<section id="features">
+<h2>Features<a class="headerlink" href="#features" title="Permalink to this headline">#</a></h2>
+<ul class="simple">
+<li><p><strong>Freezes</strong> source code and assets by copying to separate <code class="docutils literal notranslate"><span class="pre">$JOB_DIR</span></code>.</p></li>
+<li><p><strong>Auto-submits</strong> another job if current job times out.</p></li>
+<li><p><strong>Exposes hooks</strong> for custom bash code: <code class="docutils literal notranslate"><span class="pre">setup</span></code>/<code class="docutils literal notranslate"><span class="pre">setup_resume</span></code>, <code class="docutils literal notranslate"><span class="pre">on_run</span></code>/<code class="docutils literal notranslate"><span class="pre">on_run_resume</span></code>, and <code class="docutils literal notranslate"><span class="pre">teardown</span></code>.</p></li>
+<li><p><strong>`Format job names`_</strong> using parameters from config files.</p></li>
+<li><p><strong>Interactive</strong> jobs supported for easy debugging.</p></li>
+</ul>
+</section>
+<section id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">#</a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>easy-slurm
+</pre></div>
+</div>
+</section>
+<section id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">#</a></h2>
+<p>To submit a job, simply fill in the various parameters shown in the example below.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">easy_slurm</span>
+
+<span class="n">easy_slurm</span><span class="o">.</span><span class="n">submit_job</span><span class="p">(</span>
+    <span class="n">job_dir</span><span class="o">=</span><span class="s2">&quot;$HOME/jobs/</span><span class="si">{date}</span><span class="s2">-</span><span class="si">{job_name}</span><span class="s2">&quot;</span><span class="p">,</span>
+    <span class="n">src</span><span class="o">=</span><span class="s2">&quot;./src&quot;</span><span class="p">,</span>
+    <span class="n">assets</span><span class="o">=</span><span class="s2">&quot;./assets&quot;</span><span class="p">,</span>
+    <span class="n">dataset</span><span class="o">=</span><span class="s2">&quot;./data.tar.gz&quot;</span><span class="p">,</span>
+    <span class="n">setup</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">        virtualenv &quot;$SLURM_TMPDIR/env&quot;</span>
+<span class="s2">        source &quot;$SLURM_TMPDIR/env/bin/activate&quot;</span>
+<span class="s2">        pip install -r &quot;$SLURM_TMPDIR/src/requirements.txt&quot;</span>
+<span class="s2">    &quot;&quot;&quot;</span><span class="p">,</span>
+    <span class="n">setup_resume</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">        # Runs only on subsequent runs. Call setup and do anything else needed.</span>
+<span class="s2">        setup</span>
+<span class="s2">    &quot;&quot;&quot;</span><span class="p">,</span>
+    <span class="n">on_run</span><span class="o">=</span><span class="s2">&quot;python main.py&quot;</span><span class="p">,</span>
+    <span class="n">on_run_resume</span><span class="o">=</span><span class="s2">&quot;python main.py --resume&quot;</span><span class="p">,</span>
+    <span class="n">teardown</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">        # Do any cleanup tasks here.</span>
+<span class="s2">    &quot;&quot;&quot;</span><span class="p">,</span>
+    <span class="n">sbatch_options</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">&quot;job-name&quot;</span><span class="p">:</span> <span class="s2">&quot;example-simple&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;account&quot;</span><span class="p">:</span> <span class="s2">&quot;your-username&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;time&quot;</span><span class="p">:</span> <span class="s2">&quot;3:00:00&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;nodes&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="n">resubmit_limit</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span>  <span class="c1"># Automatic resubmission limit.</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>All job files will be kept in the <code class="docutils literal notranslate"><span class="pre">job_dir</span></code> directory. Provide directory paths to <code class="docutils literal notranslate"><span class="pre">src</span></code> and <code class="docutils literal notranslate"><span class="pre">assets</span></code> – these will be archived and copied to the <code class="docutils literal notranslate"><span class="pre">job_dir</span></code> directory. Provide a file path to an archive containing the <code class="docutils literal notranslate"><span class="pre">dataset</span></code>. Also provide Bash code in the hooks, which will be run in the following order:</p>
+<table class="colwidths-given table" id="id1">
+<caption><span class="caption-text">Hooks order</span><a class="headerlink" href="#id1" title="Permalink to this table">#</a></caption>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>First run:</p></th>
+<th class="head"><p>Subsequent runs:</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">setup</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">setup_resume</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">on_run</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">on_run_resume</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">teardown</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">teardown</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<p><a class="reference external" href="./examples">Full examples</a> are available, including a <cite>simple example</cite> to run “training epochs” on a cluster.</p>
+<p>Jobs can also be fully configured using YAML files. See <a class="reference external" href="./examples/simple_yaml">examples/simple_yaml</a>.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">job_dir</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;$HOME/jobs/{date}-{job_name}&quot;</span>
+<span class="nt">src</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;./src&quot;</span>
+<span class="nt">assets</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;./assets&quot;</span>
+<span class="nt">dataset</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;./data.tar.gz&quot;</span>
+<span class="nt">setup</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">  </span><span class="no">virtualenv &quot;$SLURM_TMPDIR/env&quot;</span>
+<span class="w">  </span><span class="no">source &quot;$SLURM_TMPDIR/env/bin/activate&quot;</span>
+<span class="w">  </span><span class="no">pip install -r &quot;$SLURM_TMPDIR/src/requirements.txt&quot;</span>
+<span class="nt">setup_resume</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">  </span><span class="no"># Runs only on subsequent runs. Call setup and do anything else needed.</span>
+<span class="w">  </span><span class="no">setup</span>
+<span class="nt">on_run</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;python</span><span class="nv"> </span><span class="s">main.py&quot;</span>
+<span class="nt">on_run_resume</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;python</span><span class="nv"> </span><span class="s">main.py</span><span class="nv"> </span><span class="s">--resume&quot;</span>
+<span class="nt">teardown</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">  </span><span class="no"># Do any cleanup tasks here.</span>
+<span class="nt">sbatch_options</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">job-name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;example-simple&quot;</span>
+<span class="w">  </span><span class="nt">account</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;your-username&quot;</span>
+<span class="w">  </span><span class="nt">time</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;3:00:00&quot;</span>
+<span class="w">  </span><span class="nt">nodes</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
+<span class="nt">resubmit_limit</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">64</span><span class="w">  </span><span class="c1"># Automatic resubmission limit.</span>
+</pre></div>
+</div>
+<section id="formatting">
+<h3>Formatting<a class="headerlink" href="#formatting" title="Permalink to this headline">#</a></h3>
+<p>One useful feature is formatting paths using custom template strings:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">easy_slurm</span><span class="o">.</span><span class="n">submit_job</span><span class="p">(</span>
+    <span class="n">job_dir</span><span class="o">=</span><span class="s2">&quot;$HOME/jobs/{date:%Y-%m-</span><span class="si">%d</span><span class="s2">}-</span><span class="si">{job_name}</span><span class="s2">&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>The job names can be formatted using a config dictionary:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">job_name</span> <span class="o">=</span> <span class="n">easy_slurm</span><span class="o">.</span><span class="n">format</span><span class="o">.</span><span class="n">format_with_config</span><span class="p">(</span>
+    <span class="s2">&quot;bs=</span><span class="si">{hp.batch_size:04}</span><span class="s2">,lr=</span><span class="si">{hp.lr:.1e}</span><span class="s2">&quot;</span><span class="p">,</span>
+    <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;hp&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;batch_size&quot;</span><span class="p">:</span> <span class="mi">32</span><span class="p">,</span> <span class="s2">&quot;lr&quot;</span><span class="p">:</span> <span class="mf">1e-2</span><span class="p">}},</span>
+<span class="p">)</span>
+
+<span class="n">easy_slurm</span><span class="o">.</span><span class="n">submit_job</span><span class="p">(</span>
+    <span class="n">job_dir</span><span class="o">=</span><span class="s2">&quot;$HOME/jobs/{date:%Y-%m-</span><span class="si">%d</span><span class="s2">}-</span><span class="si">{job_name}</span><span class="s2">&quot;</span><span class="p">,</span>
+    <span class="n">sbatch_options</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">&quot;job-name&quot;</span><span class="p">:</span> <span class="n">job_name</span><span class="p">,</span>  <span class="c1"># equals &quot;bs=0032,lr=1.0e-02&quot;</span>
+        <span class="o">...</span>
+    <span class="p">},</span>
+    <span class="o">...</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>This helps in automatically creating descriptive, human-readable job names.</p>
+<div class="toctree-wrapper compound">
+</div>
+<div class="toctree-wrapper compound">
+</div>
+<div class="toctree-wrapper compound">
+</div>
+<div class="toctree-wrapper compound">
+</div>
+</section>
+</section>
+</section>
+
+
+              </div>
+              
+            </main>
+            <footer class="footer-article noprint">
+                
+    <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+    <a class='right-next' id="next-link" href="tutorials/installation.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Installation</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+            </footer>
+        </div>
+    </div>
+    <div class="footer-content row">
+        <footer class="col footer"><p>
+  
+    By Mateen Ulhaq<br/>
+  
+      &copy; Copyright 2023, Mateen Ulhaq.<br/>
+</p>
+        </footer>
+    </div>
+    
+</div>
+
+
+      </div>
+    </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+
+
+  </body>
+</html>
