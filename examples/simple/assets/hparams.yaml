@@ -1,5 +1,3 @@
-dataset: "../datasets/data"
-
 # hyperparameters
 hp:
   epochs: 30

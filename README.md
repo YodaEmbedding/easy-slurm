@@ -29,7 +29,6 @@ easy_slurm.submit_job(
     job_dir="$HOME/jobs/{date}-{job_name}",
     src="./src",
     assets="./assets",
-    dataset="./data.tar.gz",
     setup="""
         virtualenv "$SLURM_TMPDIR/env"
         source "$SLURM_TMPDIR/env/bin/activate"
@@ -54,7 +53,7 @@ easy_slurm.submit_job(
 )
 ```
 
-All job files will be kept in the `job_dir` directory. Provide directory paths to `src` and `assets` -- these will be archived and copied to the `job_dir` directory. Provide a file path to an archive containing the `dataset`. Also provide Bash code in the hooks, which will be run in the following order:
+All job files will be kept in the `job_dir` directory. Provide directory paths to `src` and `assets` -- these will be archived and copied to the `job_dir` directory. Also provide Bash code in the hooks, which will be run in the following order:
 
 | First run: | Subsequent runs: |
 | ---------- | ---------------- |
@@ -70,7 +69,6 @@ Jobs can also be fully configured using YAML files. See [`examples/simple_yaml`]
 job_dir: "$HOME/jobs/{date}-{job_name}"
 src: "./src"
 assets: "./assets"
-dataset: "./data.tar.gz"
 setup: |
   virtualenv "$SLURM_TMPDIR/env"
   source "$SLURM_TMPDIR/env/bin/activate"

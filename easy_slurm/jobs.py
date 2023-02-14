@@ -19,7 +19,6 @@ def submit_job(
     *,
     src: str = "",
     assets: str = "",
-    dataset: str = "",
     on_run: str = "",
     on_run_resume: str = "",
     setup: str = "",
@@ -39,8 +38,6 @@ def submit_job(
         job_dir (str):
             Path to directory to keep all job files including
             ``src.tar``, ``assets.tar``, and auto-generated ``job.sh``.
-            Note that the ``dataset`` will not be copied and
-            will remain in its original path.
         src (str):
             Path to directory containing only source code.
             These will be archived in ``$JOB_DIR/src.tar`` and
@@ -49,10 +46,6 @@ def submit_job(
             Path to directory containing additional assets.
             These will be archived in ``$JOB_DIR/assets.tar`` and
             extracted during job run into ``$SLURM_TMPDIR/assets``.
-        dataset (str):
-            Path to ``.tar`` archive of dataset. This will be copied and
-            extracted on the local filesystem of the compute node,
-            ``$SLURM_TMPDIR``.
         on_run (str):
             Bash code executed in "on_run" stage, but only for new jobs
             that are running for the first time.
@@ -108,7 +101,6 @@ def submit_job(
         setup_resume=setup_resume,
         teardown=teardown,
         job_dir=job_dir,
-        dataset=dataset,
         cleanup_seconds=cleanup_seconds,
         resubmit_limit=resubmit_limit,
     )
@@ -137,18 +129,15 @@ def create_job_script_source(
     setup_resume: str,
     teardown: str,
     job_dir: str,
-    dataset: str,
     cleanup_seconds: int,
     resubmit_limit: int,
 ) -> str:
     """Returns source for job script."""
     job_dir = _expand_path(job_dir)
-    dataset = _expand_path(dataset)
 
     vars_str = VARS_TEMPLATE.format(
         easy_slurm_version=__version__,
         job_dir=job_dir,
-        dataset_path=dataset,
         resubmit_limit=resubmit_limit,
     )
 

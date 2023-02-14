@@ -28,7 +28,6 @@ JOB_INTERACTIVE_TEMPLATE = _format_template(JOB_INTERACTIVE_TEMPLATE)
 VARS_TEMPLATE = r"""
 EASY_SLURM_VERSION={easy_slurm_version}
 JOB_DIR={job_dir}
-DATASET_PATH={dataset_path}
 RESUBMIT_LIMIT={resubmit_limit}
 """
 
