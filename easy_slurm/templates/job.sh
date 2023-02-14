@@ -44,11 +44,15 @@ save_results() {
 {{save_results}}
 }
 
+serialize_status() {
+  echo "status=$1"
+  echo "easy_slurm_version=$EASY_SLURM_VERSION"
+  echo "resubmit_count=$RESUBMIT_COUNT"
+}
+
 status_write() {
   local status_file="$JOB_DIR/status"
-  echo "status=$1" > "$status_file"
-  echo "easy_slurm_version=$EASY_SLURM_VERSION" >> "$status_file"
-  echo "resubmit_count=$RESUBMIT_COUNT" >> "$status_file"
+  serialize_status "$1" > "$status_file"
 }
 
 handle_interrupt() {
