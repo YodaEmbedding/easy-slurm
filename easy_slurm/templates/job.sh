@@ -34,16 +34,6 @@ teardown() {
 {{teardown}}
 }
 
-extract_results() {
-  begin_func "extract_results" "$SLURM_TMPDIR"
-{{extract_results}}
-}
-
-save_results() {
-  begin_func "save_results" "$SLURM_TMPDIR"
-{{save_results}}
-}
-
 serialize_status() {
   echo "status=$1"
   echo "easy_slurm_version=$EASY_SLURM_VERSION"
@@ -150,7 +140,6 @@ finish() {
 initialize() {
   init_vars
   status_write "initializing"
-  extract_results
   extract_data
   run_setup
 }
@@ -158,7 +147,6 @@ initialize() {
 finalize() {
   status_write "finalizing"
   teardown
-  save_results
   finish
 }
 

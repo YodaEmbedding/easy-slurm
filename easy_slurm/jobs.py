@@ -8,10 +8,8 @@ from typing import Any
 from . import __version__
 from .format import format_with_config
 from .templates import (
-    EXTRACT_RESULTS,
     JOB_INTERACTIVE_TEMPLATE,
     JOB_SCRIPT_TEMPLATE,
-    SAVE_RESULTS,
     VARS_TEMPLATE,
 )
 
@@ -32,7 +30,6 @@ def submit_job(
     submit: bool = True,
     interactive: bool = False,
     resubmit_limit: int = 64,
-    results_sync_method: str = "symlink",
 ) -> str:
     """Submits job.
 
@@ -41,8 +38,8 @@ def submit_job(
     Args:
         job_dir (str):
             Path to directory to keep all job files including
-            ``src.tar``, ``assets.tar``, auto-generated ``job.sh``, and
-            results. Note that the ``dataset`` will not be copied and
+            ``src.tar``, ``assets.tar``, and auto-generated ``job.sh``.
+            Note that the ``dataset`` will not be copied and
             will remain in its original path.
         src (str):
             Path to directory containing only source code.
@@ -81,7 +78,7 @@ def submit_job(
             Dictionary of options to pass to sbatch.
         cleanup_seconds (int):
             Interrupts a job n seconds before timeout to run cleanup
-            tasks (teardown, save_results, auto-schedule new job).
+            tasks (teardown, auto-schedule new job).
             Default is 120 seconds.
         submit (bool):
             Submit created job to scheduler. Set this to ``False`` if
@@ -93,14 +90,6 @@ def submit_job(
             Maximum number of times to auto-submit a job for "resume".
             (Not entirely unlike submitting a resume for a job.)
             Default is 64 resubmissions.
-        results_sync_method (str):
-            Choices: "rsync", "symlink", or "targz".
-
-            - rsync: Sync results directory via rsync.
-            - symlink: Directly symlink results directory.
-            - targz: Extract/archive results directory into .tar.gz.
-
-            Default is ``"symlink"``.
 
     Returns:
         Path to the newly created job directory.
@@ -122,7 +111,6 @@ def submit_job(
         dataset=dataset,
         cleanup_seconds=cleanup_seconds,
         resubmit_limit=resubmit_limit,
-        results_sync_method=results_sync_method,
     )
     _write_script(job_path, job_script_str)
 
@@ -152,7 +140,6 @@ def create_job_script_source(
     dataset: str,
     cleanup_seconds: int,
     resubmit_limit: int,
-    results_sync_method: str,
 ) -> str:
     """Returns source for job script."""
     job_dir = _expand_path(job_dir)
@@ -165,14 +152,9 @@ def create_job_script_source(
         resubmit_limit=resubmit_limit,
     )
 
-    extract_results = EXTRACT_RESULTS[results_sync_method]
-    save_results = SAVE_RESULTS[results_sync_method]
-
     setup = _fix_indent(setup, 1)
     setup_resume = _fix_indent(setup_resume, 1)
     teardown = _fix_indent(teardown, 1)
-    extract_results = _fix_indent(extract_results, 1)
-    save_results = _fix_indent(save_results, 1)
 
     fix_quotes = lambda x: _quote_single_quotes(x.strip())
     on_run = fix_quotes(on_run)
@@ -190,8 +172,6 @@ def create_job_script_source(
         setup=setup,
         setup_resume=setup_resume,
         teardown=teardown,
-        extract_results=extract_results,
-        save_results=save_results,
     )
 
 
