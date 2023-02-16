@@ -16,7 +16,7 @@ readme = "README.md"
 python = "^3.7"
 
 [tool.poetry.group.dev.dependencies]
-black = "^22.3.0"
+black = "^23.1.0"
 isort = "^5.10.1"
 
 [tool.poetry.group.docs]
