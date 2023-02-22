@@ -42,7 +42,6 @@ To submit a job, simply fill in the various parameters shown in the example belo
         job_dir="$HOME/jobs/{date}-{job_name}",
         src="./src",
         assets="./assets",
-        dataset="./data.tar.gz",
         setup="""
             virtualenv "$SLURM_TMPDIR/env"
             source "$SLURM_TMPDIR/env/bin/activate"
@@ -66,7 +65,7 @@ To submit a job, simply fill in the various parameters shown in the example belo
         resubmit_limit=64,  # Automatic resubmission limit.
     )
 
-All job files will be kept in the ``job_dir`` directory. Provide directory paths to ``src`` and ``assets`` -- these will be archived and copied to the ``job_dir`` directory. Provide a file path to an archive containing the ``dataset``. Also provide Bash code in the hooks, which will be run in the following order:
+All job files will be kept in the ``job_dir`` directory. Provide directory paths to ``src`` and ``assets`` -- these will be archived and copied to the ``job_dir`` directory. Also provide Bash code in the hooks, which will be run in the following order:
 
 .. list-table:: Hooks order
    :widths: 50 50
@@ -98,7 +97,6 @@ Jobs can also be fully configured using YAML files. See `examples/simple_yaml`_.
     job_dir: "$HOME/jobs/{date}-{job_name}"
     src: "./src"
     assets: "./assets"
-    dataset: "./data.tar.gz"
     setup: |
       virtualenv "$SLURM_TMPDIR/env"
       source "$SLURM_TMPDIR/env/bin/activate"

@@ -375,7 +375,6 @@ title="Print to PDF"
     <span class="n">job_dir</span><span class="o">=</span><span class="s2">&quot;$HOME/jobs/</span><span class="si">{date}</span><span class="s2">-</span><span class="si">{job_name}</span><span class="s2">&quot;</span><span class="p">,</span>
     <span class="n">src</span><span class="o">=</span><span class="s2">&quot;./src&quot;</span><span class="p">,</span>
     <span class="n">assets</span><span class="o">=</span><span class="s2">&quot;./assets&quot;</span><span class="p">,</span>
-    <span class="n">dataset</span><span class="o">=</span><span class="s2">&quot;./data.tar.gz&quot;</span><span class="p">,</span>
     <span class="n">setup</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;</span>
 <span class="s2">        virtualenv &quot;$SLURM_TMPDIR/env&quot;</span>
 <span class="s2">        source &quot;$SLURM_TMPDIR/env/bin/activate&quot;</span>
@@ -400,7 +399,7 @@ title="Print to PDF"
 <span class="p">)</span>
 </pre></div>
 </div>
-<p>All job files will be kept in the <code class="docutils literal notranslate"><span class="pre">job_dir</span></code> directory. Provide directory paths to <code class="docutils literal notranslate"><span class="pre">src</span></code> and <code class="docutils literal notranslate"><span class="pre">assets</span></code> – these will be archived and copied to the <code class="docutils literal notranslate"><span class="pre">job_dir</span></code> directory. Provide a file path to an archive containing the <code class="docutils literal notranslate"><span class="pre">dataset</span></code>. Also provide Bash code in the hooks, which will be run in the following order:</p>
+<p>All job files will be kept in the <code class="docutils literal notranslate"><span class="pre">job_dir</span></code> directory. Provide directory paths to <code class="docutils literal notranslate"><span class="pre">src</span></code> and <code class="docutils literal notranslate"><span class="pre">assets</span></code> – these will be archived and copied to the <code class="docutils literal notranslate"><span class="pre">job_dir</span></code> directory. Also provide Bash code in the hooks, which will be run in the following order:</p>
 <table class="colwidths-given table" id="id1">
 <caption><span class="caption-text">Hooks order</span><a class="headerlink" href="#id1" title="Permalink to this table">#</a></caption>
 <colgroup>
@@ -431,7 +430,6 @@ title="Print to PDF"
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">job_dir</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;$HOME/jobs/{date}-{job_name}&quot;</span>
 <span class="nt">src</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;./src&quot;</span>
 <span class="nt">assets</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;./assets&quot;</span>
-<span class="nt">dataset</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;./data.tar.gz&quot;</span>
 <span class="nt">setup</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
 <span class="w">  </span><span class="no">virtualenv &quot;$SLURM_TMPDIR/env&quot;</span>
 <span class="w">  </span><span class="no">source &quot;$SLURM_TMPDIR/env/bin/activate&quot;</span>

@@ -224,10 +224,8 @@ title="Source repository"
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">__version__</span>
 <span class="kn">from</span> <span class="nn">.format</span> <span class="kn">import</span> <span class="n">format_with_config</span>
 <span class="kn">from</span> <span class="nn">.templates</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">EXTRACT_RESULTS</span><span class="p">,</span>
     <span class="n">JOB_INTERACTIVE_TEMPLATE</span><span class="p">,</span>
     <span class="n">JOB_SCRIPT_TEMPLATE</span><span class="p">,</span>
-    <span class="n">SAVE_RESULTS</span><span class="p">,</span>
     <span class="n">VARS_TEMPLATE</span><span class="p">,</span>
 <span class="p">)</span>
 
@@ -237,7 +235,6 @@ title="Source repository"
     <span class="o">*</span><span class="p">,</span>
     <span class="n">src</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
     <span class="n">assets</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
-    <span class="n">dataset</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
     <span class="n">on_run</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
     <span class="n">on_run_resume</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
     <span class="n">setup</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
@@ -248,7 +245,6 @@ title="Source repository"
     <span class="n">submit</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="n">interactive</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">resubmit_limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">64</span><span class="p">,</span>
-    <span class="n">results_sync_method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;symlink&quot;</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Submits job.</span>
 
@@ -257,9 +253,7 @@ title="Source repository"
 <span class="sd">    Args:</span>
 <span class="sd">        job_dir (str):</span>
 <span class="sd">            Path to directory to keep all job files including</span>
-<span class="sd">            ``src.tar``, ``assets.tar``, auto-generated ``job.sh``, and</span>
-<span class="sd">            results. Note that the ``dataset`` will not be copied and</span>
-<span class="sd">            will remain in its original path.</span>
+<span class="sd">            ``src.tar``, ``assets.tar``, and auto-generated ``job.sh``.</span>
 <span class="sd">        src (str):</span>
 <span class="sd">            Path to directory containing only source code.</span>
 <span class="sd">            These will be archived in ``$JOB_DIR/src.tar`` and</span>
@@ -268,10 +262,6 @@ title="Source repository"
 <span class="sd">            Path to directory containing additional assets.</span>
 <span class="sd">            These will be archived in ``$JOB_DIR/assets.tar`` and</span>
 <span class="sd">            extracted during job run into ``$SLURM_TMPDIR/assets``.</span>
-<span class="sd">        dataset (str):</span>
-<span class="sd">            Path to ``.tar`` archive of dataset. This will be copied and</span>
-<span class="sd">            extracted on the local filesystem of the compute node,</span>
-<span class="sd">            ``$SLURM_TMPDIR``.</span>
 <span class="sd">        on_run (str):</span>
 <span class="sd">            Bash code executed in &quot;on_run&quot; stage, but only for new jobs</span>
 <span class="sd">            that are running for the first time.</span>
@@ -297,7 +287,7 @@ title="Source repository"
 <span class="sd">            Dictionary of options to pass to sbatch.</span>
 <span class="sd">        cleanup_seconds (int):</span>
 <span class="sd">            Interrupts a job n seconds before timeout to run cleanup</span>
-<span class="sd">            tasks (teardown, save_results, auto-schedule new job).</span>
+<span class="sd">            tasks (teardown, auto-schedule new job).</span>
 <span class="sd">            Default is 120 seconds.</span>
 <span class="sd">        submit (bool):</span>
 <span class="sd">            Submit created job to scheduler. Set this to ``False`` if</span>
@@ -309,14 +299,6 @@ title="Source repository"
 <span class="sd">            Maximum number of times to auto-submit a job for &quot;resume&quot;.</span>
 <span class="sd">            (Not entirely unlike submitting a resume for a job.)</span>
 <span class="sd">            Default is 64 resubmissions.</span>
-<span class="sd">        results_sync_method (str):</span>
-<span class="sd">            Choices: &quot;rsync&quot;, &quot;symlink&quot;, or &quot;targz&quot;.</span>
-
-<span class="sd">            - rsync: Sync results directory via rsync.</span>
-<span class="sd">            - symlink: Directly symlink results directory.</span>
-<span class="sd">            - targz: Extract/archive results directory into .tar.gz.</span>
-
-<span class="sd">            Default is ``&quot;symlink&quot;``.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        Path to the newly created job directory.</span>
@@ -335,10 +317,8 @@ title="Source repository"
         <span class="n">setup_resume</span><span class="o">=</span><span class="n">setup_resume</span><span class="p">,</span>
         <span class="n">teardown</span><span class="o">=</span><span class="n">teardown</span><span class="p">,</span>
         <span class="n">job_dir</span><span class="o">=</span><span class="n">job_dir</span><span class="p">,</span>
-        <span class="n">dataset</span><span class="o">=</span><span class="n">dataset</span><span class="p">,</span>
         <span class="n">cleanup_seconds</span><span class="o">=</span><span class="n">cleanup_seconds</span><span class="p">,</span>
         <span class="n">resubmit_limit</span><span class="o">=</span><span class="n">resubmit_limit</span><span class="p">,</span>
-        <span class="n">results_sync_method</span><span class="o">=</span><span class="n">results_sync_method</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">_write_script</span><span class="p">(</span><span class="n">job_path</span><span class="p">,</span> <span class="n">job_script_str</span><span class="p">)</span>
 
@@ -365,30 +345,21 @@ title="Source repository"
     <span class="n">setup_resume</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">teardown</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">job_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-    <span class="n">dataset</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">cleanup_seconds</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
     <span class="n">resubmit_limit</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-    <span class="n">results_sync_method</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns source for job script.&quot;&quot;&quot;</span>
     <span class="n">job_dir</span> <span class="o">=</span> <span class="n">_expand_path</span><span class="p">(</span><span class="n">job_dir</span><span class="p">)</span>
-    <span class="n">dataset</span> <span class="o">=</span> <span class="n">_expand_path</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span>
 
     <span class="n">vars_str</span> <span class="o">=</span> <span class="n">VARS_TEMPLATE</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
         <span class="n">easy_slurm_version</span><span class="o">=</span><span class="n">__version__</span><span class="p">,</span>
         <span class="n">job_dir</span><span class="o">=</span><span class="n">job_dir</span><span class="p">,</span>
-        <span class="n">dataset_path</span><span class="o">=</span><span class="n">dataset</span><span class="p">,</span>
         <span class="n">resubmit_limit</span><span class="o">=</span><span class="n">resubmit_limit</span><span class="p">,</span>
     <span class="p">)</span>
-
-    <span class="n">extract_results</span> <span class="o">=</span> <span class="n">EXTRACT_RESULTS</span><span class="p">[</span><span class="n">results_sync_method</span><span class="p">]</span>
-    <span class="n">save_results</span> <span class="o">=</span> <span class="n">SAVE_RESULTS</span><span class="p">[</span><span class="n">results_sync_method</span><span class="p">]</span>
 
     <span class="n">setup</span> <span class="o">=</span> <span class="n">_fix_indent</span><span class="p">(</span><span class="n">setup</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
     <span class="n">setup_resume</span> <span class="o">=</span> <span class="n">_fix_indent</span><span class="p">(</span><span class="n">setup_resume</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
     <span class="n">teardown</span> <span class="o">=</span> <span class="n">_fix_indent</span><span class="p">(</span><span class="n">teardown</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-    <span class="n">extract_results</span> <span class="o">=</span> <span class="n">_fix_indent</span><span class="p">(</span><span class="n">extract_results</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-    <span class="n">save_results</span> <span class="o">=</span> <span class="n">_fix_indent</span><span class="p">(</span><span class="n">save_results</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 
     <span class="n">fix_quotes</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">_quote_single_quotes</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
     <span class="n">on_run</span> <span class="o">=</span> <span class="n">fix_quotes</span><span class="p">(</span><span class="n">on_run</span><span class="p">)</span>
@@ -406,8 +377,6 @@ title="Source repository"
         <span class="n">setup</span><span class="o">=</span><span class="n">setup</span><span class="p">,</span>
         <span class="n">setup_resume</span><span class="o">=</span><span class="n">setup_resume</span><span class="p">,</span>
         <span class="n">teardown</span><span class="o">=</span><span class="n">teardown</span><span class="p">,</span>
-        <span class="n">extract_results</span><span class="o">=</span><span class="n">extract_results</span><span class="p">,</span>
-        <span class="n">save_results</span><span class="o">=</span><span class="n">save_results</span><span class="p">,</span>
     <span class="p">)</span></div>
 
 
