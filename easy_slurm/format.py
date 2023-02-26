@@ -2,6 +2,10 @@ import re
 from datetime import datetime
 from typing import Any, Optional, Sequence
 
+__all__ = [
+    "format_with_config",
+]
+
 
 def format_with_config(
     template: str,
