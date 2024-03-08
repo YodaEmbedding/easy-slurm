@@ -91,7 +91,7 @@ resubmit_limit: 64  # Automatic resubmission limit.
 One useful feature is formatting paths using custom template strings:
 ```python
 easy_slurm.submit_job(
-    job_dir="$HOME/jobs/{date:%Y-%m-%d}-{job_name}",
+    job_dir="$HOME/jobs/{date:%Y-%m-%d_%H-%M-%S_%3f}-{job_name}",
 )
 ```
 
