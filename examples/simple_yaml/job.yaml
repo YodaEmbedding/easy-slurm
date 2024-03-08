@@ -17,10 +17,11 @@ on_run_resume: "cd src && python main.py --resume"
 teardown: |
   # Do any cleanup tasks here.
 sbatch_options:
-  job-name: "example-simple"
+  job-name: "example-simple-epochs={hp.epochs}"
   account: "def-ibajic"
   time: "0:03:00"
   nodes: 1
   ntasks-per-node: 1
   cpus-per-task: 1
   mem: "4000M"
+# config: {}  # Loaded from assets/hparams.yaml.

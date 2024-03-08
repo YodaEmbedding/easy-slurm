@@ -1,4 +1,9 @@
+import yaml
+
 import easy_slurm
+
+with open("assets/hparams.yaml") as f:
+    config = yaml.safe_load(f)
 
 easy_slurm.submit_job(
     job_dir="$HOME/.local/share/easy_slurm/{date}-{job_name}",
@@ -23,7 +28,7 @@ easy_slurm.submit_job(
         # Do any cleanup tasks here.
     """,
     sbatch_options={
-        "job-name": "example-simple",
+        "job-name": "example-simple-epochs={hp.epochs}",
         "account": "def-ibajic",
         "time": "0:03:00",
         "nodes": "1",
@@ -31,4 +36,5 @@ easy_slurm.submit_job(
         "cpus-per-task": "1",
         "mem": "4000M",
     },
+    config=config,
 )
