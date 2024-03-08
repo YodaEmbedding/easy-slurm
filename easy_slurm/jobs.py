@@ -37,6 +37,7 @@ def submit_job(
     submit: bool = True,
     interactive: bool = False,
     resubmit_limit: int = 64,
+    config: dict[str, Any] = {},
 ) -> str:
     """Submits job.
 
@@ -87,12 +88,17 @@ def submit_job(
             Maximum number of times to auto-submit a job for "resume".
             (Not entirely unlike submitting a resume for a job.)
             Default is 64 resubmissions.
+        config (dict[str, Any]):
+            A dictionary of configuration values to use for formatting.
 
     Returns:
         Path to the newly created job directory.
     """
     job_name = sbatch_options.get("job-name", "untitled")
-    job_dir = _expand_path(format_with_config(job_dir, {"job_name": job_name}))
+    job_name = format_with_config(job_name, config)
+    job_dir = _expand_path(
+        format_with_config(job_dir, {**config, "job_name": job_name})
+    )
     create_job_dir(job_dir, src)
 
     _write_script(
