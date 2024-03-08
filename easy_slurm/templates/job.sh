@@ -102,7 +102,6 @@ run_setup() {
 run() {
   status_write "running"
   begin_func "run" "$SLURM_TMPDIR"
-  cd "$SLURM_TMPDIR/src"
   trap handle_interrupt USR1
   if [ "$IS_FIRST_RUN" = true ]; then
     cmd="$on_run"

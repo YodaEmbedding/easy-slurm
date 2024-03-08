@@ -2,8 +2,9 @@ import os
 import re
 import stat
 import subprocess
+from pathlib import Path
 from textwrap import dedent, indent
-from typing import Any
+from typing import Any, Sequence
 
 from . import __version__
 from .format import format_with_config
@@ -25,7 +26,7 @@ __all__ = [
 def submit_job(
     job_dir: str,
     *,
-    src: str = "",
+    src: Sequence[str] = (),
     on_run: str = "",
     on_run_resume: str = "",
     setup: str = "",
@@ -45,10 +46,10 @@ def submit_job(
         job_dir (str):
             Path to directory to keep all job files including
             ``src.tar`` and auto-generated ``job.sh``.
-        src (str):
-            Path to directory containing only source code.
+        src (list[str]):
+            Path to directories containing only source code.
             These will be archived in ``$JOB_DIR/src.tar`` and
-            extracted during job run into ``$SLURM_TMPDIR/src``.
+            extracted during job run into ``$SLURM_TMPDIR``.
         on_run (str):
             Bash code executed in "on_run" stage, but only for new jobs
             that are running for the first time.
@@ -175,17 +176,13 @@ def create_job_interactive_script_source(
     )
 
 
-def create_job_dir(
-    job_dir: str,
-    src: str,
-):
+def create_job_dir(job_dir: str, src: Sequence[str]):
     """Creates job directory and freezes all necessary files."""
     job_dir = _expand_path(job_dir)
-    src = _expand_path(src)
+    src = [_expand_path(x) for x in src]
 
     os.makedirs(job_dir, exist_ok=True)
-    if src != "":
-        _create_tar_dir(src, f"{job_dir}/src.tar.gz", "src")
+    _create_tar_dir(src, f"{job_dir}/src.tar.gz")
 
     with open(f"{job_dir}/status", "w") as f:
         print("status=new", file=f)
@@ -220,9 +217,18 @@ def _expand_path(path: str) -> str:
     return "" if path == "" else os.path.abspath(os.path.expandvars(path))
 
 
-def _create_tar_dir(src, dst, root_name):
-    transform = rf"s/^\./{root_name}/"
-    cmd = ["tar", "czf", dst, "-C", src, ".", "--transform", transform]
+def _create_tar_dir(src, dst, root_name=None):
+    if not src:
+        src_args = ["-T", "/dev/null"]
+    else:
+        src_args = [
+            arg
+            for srcdir in src
+            for arg in ["-C", Path(srcdir).parent, Path(srcdir).name]
+        ]
+    cmd = ["tar", "czf", dst, *src_args]
+    if root_name is not None:
+        cmd.extend(["--transform", rf"s/^/{root_name}\//"])
     subprocess.run(cmd, check=True)
 
 

@@ -40,7 +40,7 @@ To submit a job, simply fill in the various parameters shown in the example belo
 
     easy_slurm.submit_job(
         job_dir="$HOME/jobs/{date}-{job_name}",
-        src="./src",
+        src=["./src", "./assets"],
         setup="""
             virtualenv "$SLURM_TMPDIR/env"
             source "$SLURM_TMPDIR/env/bin/activate"
@@ -50,8 +50,8 @@ To submit a job, simply fill in the various parameters shown in the example belo
             # Runs only on subsequent runs. Call setup and do anything else needed.
             setup
         """,
-        on_run="python main.py",
-        on_run_resume="python main.py --resume",
+        on_run="cd src && python main.py",
+        on_run_resume="cd src && python main.py --resume",
         teardown="""
             # Do any cleanup tasks here.
         """,
@@ -94,7 +94,7 @@ Jobs can also be fully configured using YAML files. See `examples/simple_yaml`_.
 .. code-block:: yaml
 
     job_dir: "$HOME/jobs/{date}-{job_name}"
-    src: "./src"
+    src: ["./src", "./assets"]
     setup: |
       virtualenv "$SLURM_TMPDIR/env"
       source "$SLURM_TMPDIR/env/bin/activate"
@@ -102,8 +102,8 @@ Jobs can also be fully configured using YAML files. See `examples/simple_yaml`_.
     setup_resume: |
       # Runs only on subsequent runs. Call setup and do anything else needed.
       setup
-    on_run: "python main.py"
-    on_run_resume: "python main.py --resume"
+    on_run: "cd src && python main.py"
+    on_run_resume: "cd src && python main.py --resume"
     teardown: |
       # Do any cleanup tasks here.
     sbatch_options:
