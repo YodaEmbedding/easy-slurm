@@ -87,7 +87,6 @@ init_vars() {
 
 extract_data() {
   begin_func "extract_data" "$SLURM_TMPDIR"
-  tar xf "$JOB_DIR/assets.tar.gz"
   tar xf "$JOB_DIR/src.tar.gz"
 }
 

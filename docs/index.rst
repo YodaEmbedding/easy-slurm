@@ -10,7 +10,7 @@ Easy Slurm allows you to easily manage and submit robust jobs to Slurm using Pyt
 Features
 --------
 
-- **Freezes** source code and assets by copying to separate ``$JOB_DIR``.
+- **Freezes** source code by copying to separate ``$JOB_DIR``.
 - **Auto-submits** another job if current job times out.
 - **Exposes hooks** for custom bash code: ``setup``/``setup_resume``, ``on_run``/``on_run_resume``, and ``teardown``.
 - |Format job names|_ using parameters from config files.
@@ -41,7 +41,6 @@ To submit a job, simply fill in the various parameters shown in the example belo
     easy_slurm.submit_job(
         job_dir="$HOME/jobs/{date}-{job_name}",
         src="./src",
-        assets="./assets",
         setup="""
             virtualenv "$SLURM_TMPDIR/env"
             source "$SLURM_TMPDIR/env/bin/activate"
@@ -65,7 +64,7 @@ To submit a job, simply fill in the various parameters shown in the example belo
         resubmit_limit=64,  # Automatic resubmission limit.
     )
 
-All job files will be kept in the ``job_dir`` directory. Provide directory paths to ``src`` and ``assets`` -- these will be archived and copied to the ``job_dir`` directory. Also provide Bash code in the hooks, which will be run in the following order:
+All job files will be kept in the ``job_dir`` directory. Provide directory paths to ``src`` -- these will be archived and copied to the ``job_dir`` directory. Also provide Bash code in the hooks, which will be run in the following order:
 
 .. list-table:: Hooks order
    :widths: 50 50
@@ -96,7 +95,6 @@ Jobs can also be fully configured using YAML files. See `examples/simple_yaml`_.
 
     job_dir: "$HOME/jobs/{date}-{job_name}"
     src: "./src"
-    assets: "./assets"
     setup: |
       virtualenv "$SLURM_TMPDIR/env"
       source "$SLURM_TMPDIR/env/bin/activate"

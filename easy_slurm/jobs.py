@@ -26,7 +26,6 @@ def submit_job(
     job_dir: str,
     *,
     src: str = "",
-    assets: str = "",
     on_run: str = "",
     on_run_resume: str = "",
     setup: str = "",
@@ -40,20 +39,16 @@ def submit_job(
 ) -> str:
     """Submits job.
 
-    Creates job directory with frozen assets and submits job to slurm.
+    Creates job directory with frozen src and submits job to slurm.
 
     Args:
         job_dir (str):
             Path to directory to keep all job files including
-            ``src.tar``, ``assets.tar``, and auto-generated ``job.sh``.
+            ``src.tar`` and auto-generated ``job.sh``.
         src (str):
             Path to directory containing only source code.
             These will be archived in ``$JOB_DIR/src.tar`` and
             extracted during job run into ``$SLURM_TMPDIR/src``.
-        assets (str):
-            Path to directory containing additional assets.
-            These will be archived in ``$JOB_DIR/assets.tar`` and
-            extracted during job run into ``$SLURM_TMPDIR/assets``.
         on_run (str):
             Bash code executed in "on_run" stage, but only for new jobs
             that are running for the first time.
@@ -97,7 +92,7 @@ def submit_job(
     """
     job_name = sbatch_options.get("job-name", "untitled")
     job_dir = _expand_path(format_with_config(job_dir, {"job_name": job_name}))
-    create_job_dir(job_dir, src, assets)
+    create_job_dir(job_dir, src)
 
     _write_script(
         filename=f"{job_dir}/job.sh",
@@ -183,18 +178,14 @@ def create_job_interactive_script_source(
 def create_job_dir(
     job_dir: str,
     src: str,
-    assets: str,
 ):
     """Creates job directory and freezes all necessary files."""
     job_dir = _expand_path(job_dir)
     src = _expand_path(src)
-    assets = _expand_path(assets)
 
     os.makedirs(job_dir, exist_ok=True)
     if src != "":
         _create_tar_dir(src, f"{job_dir}/src.tar.gz", "src")
-    if assets != "":
-        _create_tar_dir(assets, f"{job_dir}/assets.tar.gz", "assets")
 
     with open(f"{job_dir}/status", "w") as f:
         print("status=new", file=f)

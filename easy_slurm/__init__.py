@@ -4,7 +4,7 @@ Easy Slurm
 
 Helps users submit robust jobs to slurm using a python/bash interface.
 
-- Freezes source code and assets by copying to separate ``JOB_DIR``.
+- Freezes source code by copying to separate ``JOB_DIR``.
 - Copies data to local filesystem of compute node (``SLURM_TMPDIR``)
   for performance.
 - Exposes hooks for custom bash code: ``setup``, ``setup_resume``,

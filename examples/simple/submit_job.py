@@ -3,7 +3,6 @@ import easy_slurm
 easy_slurm.submit_job(
     job_dir="$HOME/.local/share/easy_slurm/{date}-{job_name}",
     src="./src",
-    assets="./assets",
     setup="""
         module load python/3.9
         virtualenv --no-download "$SLURM_TMPDIR/env"
