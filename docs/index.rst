@@ -121,28 +121,29 @@ One useful feature is formatting paths using custom template strings:
 .. code-block:: python
 
     easy_slurm.submit_job(
-        job_dir="$HOME/jobs/{date:%Y-%m-%d}-{job_name}",
+        job_dir="$HOME/jobs/{date:%Y-%m-%d_%H-%M-%S_%3f}-{job_name}",
     )
 
 The job names can be formatted using a config dictionary:
 
 .. code-block:: python
 
-    job_name = easy_slurm.format.format_with_config(
-        "bs={hp.batch_size:04},lr={hp.lr:.1e}",
+    easy_slurm.submit_job(
+        sbatch_options={
+            "job-name": "bs={hp.batch_size:04},lr={hp.lr:.1e}",
+            # Equivalent to:
+            # "job-name": "bs=0032,lr=1.0e-02"
+        },
         config={"hp": {"batch_size": 32, "lr": 1e-2}},
     )
 
-    easy_slurm.submit_job(
-        job_dir="$HOME/jobs/{date:%Y-%m-%d}-{job_name}",
-        sbatch_options={
-            "job-name": job_name,  # equals "bs=0032,lr=1.0e-02"
-            ...
-        },
-        ...
-    )
-
 This helps in automatically creating descriptive, human-readable job names.
+
+For the CLI / YAML interface, the same can be achieved using the `--config` argument:
+
+.. code-block:: bash
+
+    easy-slurm --job="job.yaml" --config="config.yaml"
 
 
 .. toctree::

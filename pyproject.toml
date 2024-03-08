@@ -12,6 +12,9 @@ repository = "https://github.com/YodaEmbedding/easy-slurm"
 keywords = ["slurm", "sbatch"]
 readme = "README.md"
 
+[tool.poetry.scripts]
+easy-slurm = "easy_slurm.run.submit:main"
+
 [tool.poetry.dependencies]
 python = "^3.7"
 

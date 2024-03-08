@@ -20,6 +20,11 @@ pip install easy-slurm
 
 ## Usage
 
+Easy Slurm provides a CLI / YAML interface, as well as a Python interface.
+
+
+### Python API
+
 To submit a job, simply fill in the various parameters shown in the example below.
 
 ```python
@@ -62,7 +67,17 @@ All job files will be kept in the `job_dir` directory. Provide directory paths t
 
 Full examples can be found [here](./examples), including a [simple example](./examples/simple) to run "training epochs" on a cluster.
 
+
+### CLI / YAML Interface
+
 Jobs can also be fully configured using YAML files. See [`examples/simple_yaml`](./examples/simple_yaml).
+
+<table>
+<tr>
+<td><code>job.yaml</code></td>
+</tr>
+<tr>
+<td>
 
 ```yaml
 job_dir: "$HOME/jobs/{date}-{job_name}"
@@ -85,6 +100,22 @@ sbatch_options:
   nodes: 1
 resubmit_limit: 64  # Automatic resubmission limit.
 ```
+</td>
+</tr>
+</table>
+
+Then submit the job using:
+
+```bash
+easy-slurm --job="job.yaml"
+```
+
+One can override the parameters in the YAML file using command-line arguments. For example:
+
+```bash
+easy-slurm --job="job.yaml" --src='["./src", "./assets", "./extra"]'
+```
+
 
 ### Formatting
 
@@ -108,6 +139,12 @@ easy_slurm.submit_job(
 ```
 
 This helps in automatically creating descriptive, human-readable job names.
+
+For the CLI / YAML interface, the same can be achieved using the `--config` argument:
+
+```bash
+easy-slurm --job="job.yaml" --config="config.yaml"
+```
 
 See the [documentation] for more information and examples.
 
