@@ -218,8 +218,9 @@ title="Source repository"
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">stat</span>
 <span class="kn">import</span> <span class="nn">subprocess</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">from</span> <span class="nn">textwrap</span> <span class="kn">import</span> <span class="n">dedent</span><span class="p">,</span> <span class="n">indent</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Sequence</span>
 
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">__version__</span>
 <span class="kn">from</span> <span class="nn">.format</span> <span class="kn">import</span> <span class="n">format_with_config</span>
@@ -241,8 +242,7 @@ title="Source repository"
 <div class="viewcode-block" id="submit_job"><a class="viewcode-back" href="../../easy_slurm/jobs.html#easy_slurm.jobs.submit_job">[docs]</a><span class="k">def</span> <span class="nf">submit_job</span><span class="p">(</span>
     <span class="n">job_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
-    <span class="n">src</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
-    <span class="n">assets</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="n">src</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">(),</span>
     <span class="n">on_run</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
     <span class="n">on_run_resume</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
     <span class="n">setup</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
@@ -253,23 +253,20 @@ title="Source repository"
     <span class="n">submit</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="n">interactive</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">resubmit_limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">64</span><span class="p">,</span>
+    <span class="n">config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{},</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Submits job.</span>
 
-<span class="sd">    Creates job directory with frozen assets and submits job to slurm.</span>
+<span class="sd">    Creates job directory with frozen src and submits job to slurm.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        job_dir (str):</span>
 <span class="sd">            Path to directory to keep all job files including</span>
-<span class="sd">            ``src.tar``, ``assets.tar``, and auto-generated ``job.sh``.</span>
-<span class="sd">        src (str):</span>
-<span class="sd">            Path to directory containing only source code.</span>
+<span class="sd">            ``src.tar`` and auto-generated ``job.sh``.</span>
+<span class="sd">        src (list[str]):</span>
+<span class="sd">            Path to directories containing only source code.</span>
 <span class="sd">            These will be archived in ``$JOB_DIR/src.tar`` and</span>
-<span class="sd">            extracted during job run into ``$SLURM_TMPDIR/src``.</span>
-<span class="sd">        assets (str):</span>
-<span class="sd">            Path to directory containing additional assets.</span>
-<span class="sd">            These will be archived in ``$JOB_DIR/assets.tar`` and</span>
-<span class="sd">            extracted during job run into ``$SLURM_TMPDIR/assets``.</span>
+<span class="sd">            extracted during job run into ``$SLURM_TMPDIR``.</span>
 <span class="sd">        on_run (str):</span>
 <span class="sd">            Bash code executed in &quot;on_run&quot; stage, but only for new jobs</span>
 <span class="sd">            that are running for the first time.</span>
@@ -307,13 +304,18 @@ title="Source repository"
 <span class="sd">            Maximum number of times to auto-submit a job for &quot;resume&quot;.</span>
 <span class="sd">            (Not entirely unlike submitting a resume for a job.)</span>
 <span class="sd">            Default is 64 resubmissions.</span>
+<span class="sd">        config (dict[str, Any]):</span>
+<span class="sd">            A dictionary of configuration values to use for formatting.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        Path to the newly created job directory.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">job_name</span> <span class="o">=</span> <span class="n">sbatch_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;job-name&quot;</span><span class="p">,</span> <span class="s2">&quot;untitled&quot;</span><span class="p">)</span>
-    <span class="n">job_dir</span> <span class="o">=</span> <span class="n">_expand_path</span><span class="p">(</span><span class="n">format_with_config</span><span class="p">(</span><span class="n">job_dir</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;job_name&quot;</span><span class="p">:</span> <span class="n">job_name</span><span class="p">}))</span>
-    <span class="n">create_job_dir</span><span class="p">(</span><span class="n">job_dir</span><span class="p">,</span> <span class="n">src</span><span class="p">,</span> <span class="n">assets</span><span class="p">)</span>
+    <span class="n">job_name</span> <span class="o">=</span> <span class="n">format_with_config</span><span class="p">(</span><span class="n">job_name</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
+    <span class="n">job_dir</span> <span class="o">=</span> <span class="n">_expand_path</span><span class="p">(</span>
+        <span class="n">format_with_config</span><span class="p">(</span><span class="n">job_dir</span><span class="p">,</span> <span class="p">{</span><span class="o">**</span><span class="n">config</span><span class="p">,</span> <span class="s2">&quot;job_name&quot;</span><span class="p">:</span> <span class="n">job_name</span><span class="p">})</span>
+    <span class="p">)</span>
+    <span class="n">create_job_dir</span><span class="p">(</span><span class="n">job_dir</span><span class="p">,</span> <span class="n">src</span><span class="p">)</span>
 
     <span class="n">_write_script</span><span class="p">(</span>
         <span class="n">filename</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">job_dir</span><span class="si">}</span><span class="s2">/job.sh&quot;</span><span class="p">,</span>
@@ -396,21 +398,13 @@ title="Source repository"
     <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="create_job_dir"><a class="viewcode-back" href="../../easy_slurm/jobs.html#easy_slurm.jobs.create_job_dir">[docs]</a><span class="k">def</span> <span class="nf">create_job_dir</span><span class="p">(</span>
-    <span class="n">job_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-    <span class="n">src</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-    <span class="n">assets</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-<span class="p">):</span>
+<div class="viewcode-block" id="create_job_dir"><a class="viewcode-back" href="../../easy_slurm/jobs.html#easy_slurm.jobs.create_job_dir">[docs]</a><span class="k">def</span> <span class="nf">create_job_dir</span><span class="p">(</span><span class="n">job_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">src</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Creates job directory and freezes all necessary files.&quot;&quot;&quot;</span>
     <span class="n">job_dir</span> <span class="o">=</span> <span class="n">_expand_path</span><span class="p">(</span><span class="n">job_dir</span><span class="p">)</span>
-    <span class="n">src</span> <span class="o">=</span> <span class="n">_expand_path</span><span class="p">(</span><span class="n">src</span><span class="p">)</span>
-    <span class="n">assets</span> <span class="o">=</span> <span class="n">_expand_path</span><span class="p">(</span><span class="n">assets</span><span class="p">)</span>
+    <span class="n">src</span> <span class="o">=</span> <span class="p">[</span><span class="n">_expand_path</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">src</span><span class="p">]</span>
 
     <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">job_dir</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">src</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
-        <span class="n">_create_tar_dir</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">job_dir</span><span class="si">}</span><span class="s2">/src.tar.gz&quot;</span><span class="p">,</span> <span class="s2">&quot;src&quot;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">assets</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
-        <span class="n">_create_tar_dir</span><span class="p">(</span><span class="n">assets</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">job_dir</span><span class="si">}</span><span class="s2">/assets.tar.gz&quot;</span><span class="p">,</span> <span class="s2">&quot;assets&quot;</span><span class="p">)</span>
+    <span class="n">_create_tar_dir</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">job_dir</span><span class="si">}</span><span class="s2">/src.tar.gz&quot;</span><span class="p">)</span>
 
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">job_dir</span><span class="si">}</span><span class="s2">/status&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;status=new&quot;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">f</span><span class="p">)</span>
@@ -445,9 +439,18 @@ title="Source repository"
     <span class="k">return</span> <span class="s2">&quot;&quot;</span> <span class="k">if</span> <span class="n">path</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span> <span class="k">else</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expandvars</span><span class="p">(</span><span class="n">path</span><span class="p">))</span>
 
 
-<span class="k">def</span> <span class="nf">_create_tar_dir</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">dst</span><span class="p">,</span> <span class="n">root_name</span><span class="p">):</span>
-    <span class="n">transform</span> <span class="o">=</span> <span class="sa">rf</span><span class="s2">&quot;s/^\./</span><span class="si">{</span><span class="n">root_name</span><span class="si">}</span><span class="s2">/&quot;</span>
-    <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;tar&quot;</span><span class="p">,</span> <span class="s2">&quot;czf&quot;</span><span class="p">,</span> <span class="n">dst</span><span class="p">,</span> <span class="s2">&quot;-C&quot;</span><span class="p">,</span> <span class="n">src</span><span class="p">,</span> <span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="s2">&quot;--transform&quot;</span><span class="p">,</span> <span class="n">transform</span><span class="p">]</span>
+<span class="k">def</span> <span class="nf">_create_tar_dir</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">dst</span><span class="p">,</span> <span class="n">root_name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">src</span><span class="p">:</span>
+        <span class="n">src_args</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;-T&quot;</span><span class="p">,</span> <span class="s2">&quot;/dev/null&quot;</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">src_args</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">arg</span>
+            <span class="k">for</span> <span class="n">srcdir</span> <span class="ow">in</span> <span class="n">src</span>
+            <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;-C&quot;</span><span class="p">,</span> <span class="n">Path</span><span class="p">(</span><span class="n">srcdir</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="p">,</span> <span class="n">Path</span><span class="p">(</span><span class="n">srcdir</span><span class="p">)</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
+        <span class="p">]</span>
+    <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;tar&quot;</span><span class="p">,</span> <span class="s2">&quot;czf&quot;</span><span class="p">,</span> <span class="n">dst</span><span class="p">,</span> <span class="o">*</span><span class="n">src_args</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">root_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">cmd</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s2">&quot;--transform&quot;</span><span class="p">,</span> <span class="sa">rf</span><span class="s2">&quot;s/^/</span><span class="si">{</span><span class="n">root_name</span><span class="si">}</span><span class="s2">\//&quot;</span><span class="p">])</span>
     <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 

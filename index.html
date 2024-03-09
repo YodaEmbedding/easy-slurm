@@ -353,7 +353,7 @@ title="Print to PDF"
 <section id="features">
 <h2>Features<a class="headerlink" href="#features" title="Permalink to this headline">#</a></h2>
 <ul class="simple">
-<li><p><strong>Freezes</strong> source code and assets by copying to separate <code class="docutils literal notranslate"><span class="pre">$JOB_DIR</span></code>.</p></li>
+<li><p><strong>Freezes</strong> source code by copying to separate <code class="docutils literal notranslate"><span class="pre">$JOB_DIR</span></code>.</p></li>
 <li><p><strong>Auto-submits</strong> another job if current job times out.</p></li>
 <li><p><strong>Exposes hooks</strong> for custom bash code: <code class="docutils literal notranslate"><span class="pre">setup</span></code>/<code class="docutils literal notranslate"><span class="pre">setup_resume</span></code>, <code class="docutils literal notranslate"><span class="pre">on_run</span></code>/<code class="docutils literal notranslate"><span class="pre">on_run_resume</span></code>, and <code class="docutils literal notranslate"><span class="pre">teardown</span></code>.</p></li>
 <li><p><a class="reference external" href="#formatting"><strong>Format job names</strong></a> using parameters from config files.</p></li>
@@ -373,8 +373,7 @@ title="Print to PDF"
 
 <span class="n">easy_slurm</span><span class="o">.</span><span class="n">submit_job</span><span class="p">(</span>
     <span class="n">job_dir</span><span class="o">=</span><span class="s2">&quot;$HOME/jobs/</span><span class="si">{date}</span><span class="s2">-</span><span class="si">{job_name}</span><span class="s2">&quot;</span><span class="p">,</span>
-    <span class="n">src</span><span class="o">=</span><span class="s2">&quot;./src&quot;</span><span class="p">,</span>
-    <span class="n">assets</span><span class="o">=</span><span class="s2">&quot;./assets&quot;</span><span class="p">,</span>
+    <span class="n">src</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;./src&quot;</span><span class="p">,</span> <span class="s2">&quot;./assets&quot;</span><span class="p">],</span>
     <span class="n">setup</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;</span>
 <span class="s2">        virtualenv &quot;$SLURM_TMPDIR/env&quot;</span>
 <span class="s2">        source &quot;$SLURM_TMPDIR/env/bin/activate&quot;</span>
@@ -384,8 +383,8 @@ title="Print to PDF"
 <span class="s2">        # Runs only on subsequent runs. Call setup and do anything else needed.</span>
 <span class="s2">        setup</span>
 <span class="s2">    &quot;&quot;&quot;</span><span class="p">,</span>
-    <span class="n">on_run</span><span class="o">=</span><span class="s2">&quot;python main.py&quot;</span><span class="p">,</span>
-    <span class="n">on_run_resume</span><span class="o">=</span><span class="s2">&quot;python main.py --resume&quot;</span><span class="p">,</span>
+    <span class="n">on_run</span><span class="o">=</span><span class="s2">&quot;cd src &amp;&amp; python main.py&quot;</span><span class="p">,</span>
+    <span class="n">on_run_resume</span><span class="o">=</span><span class="s2">&quot;cd src &amp;&amp; python main.py --resume&quot;</span><span class="p">,</span>
     <span class="n">teardown</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;</span>
 <span class="s2">        # Do any cleanup tasks here.</span>
 <span class="s2">    &quot;&quot;&quot;</span><span class="p">,</span>
@@ -399,7 +398,7 @@ title="Print to PDF"
 <span class="p">)</span>
 </pre></div>
 </div>
-<p>All job files will be kept in the <code class="docutils literal notranslate"><span class="pre">job_dir</span></code> directory. Provide directory paths to <code class="docutils literal notranslate"><span class="pre">src</span></code> and <code class="docutils literal notranslate"><span class="pre">assets</span></code> – these will be archived and copied to the <code class="docutils literal notranslate"><span class="pre">job_dir</span></code> directory. Also provide Bash code in the hooks, which will be run in the following order:</p>
+<p>All job files will be kept in the <code class="docutils literal notranslate"><span class="pre">job_dir</span></code> directory. Provide directory paths to <code class="docutils literal notranslate"><span class="pre">src</span></code> – these will be archived and copied to the <code class="docutils literal notranslate"><span class="pre">job_dir</span></code> directory. Also provide Bash code in the hooks, which will be run in the following order:</p>
 <table class="colwidths-given table" id="id1">
 <caption><span class="caption-text">Hooks order</span><a class="headerlink" href="#id1" title="Permalink to this table">#</a></caption>
 <colgroup>
@@ -428,8 +427,7 @@ title="Print to PDF"
 <h3>YAML<a class="headerlink" href="#yaml" title="Permalink to this headline">#</a></h3>
 <p>Jobs can also be fully configured using YAML files. See <a class="reference external" href="https://github.com/YodaEmbedding/easy-slurm/tree/main/examples/simple_yaml">examples/simple_yaml</a>.</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">job_dir</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;$HOME/jobs/{date}-{job_name}&quot;</span>
-<span class="nt">src</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;./src&quot;</span>
-<span class="nt">assets</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;./assets&quot;</span>
+<span class="nt">src</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&quot;./src&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;./assets&quot;</span><span class="p p-Indicator">]</span>
 <span class="nt">setup</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
 <span class="w">  </span><span class="no">virtualenv &quot;$SLURM_TMPDIR/env&quot;</span>
 <span class="w">  </span><span class="no">source &quot;$SLURM_TMPDIR/env/bin/activate&quot;</span>
@@ -437,8 +435,8 @@ title="Print to PDF"
 <span class="nt">setup_resume</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
 <span class="w">  </span><span class="no"># Runs only on subsequent runs. Call setup and do anything else needed.</span>
 <span class="w">  </span><span class="no">setup</span>
-<span class="nt">on_run</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;python</span><span class="nv"> </span><span class="s">main.py&quot;</span>
-<span class="nt">on_run_resume</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;python</span><span class="nv"> </span><span class="s">main.py</span><span class="nv"> </span><span class="s">--resume&quot;</span>
+<span class="nt">on_run</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;cd</span><span class="nv"> </span><span class="s">src</span><span class="nv"> </span><span class="s">&amp;&amp;</span><span class="nv"> </span><span class="s">python</span><span class="nv"> </span><span class="s">main.py&quot;</span>
+<span class="nt">on_run_resume</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;cd</span><span class="nv"> </span><span class="s">src</span><span class="nv"> </span><span class="s">&amp;&amp;</span><span class="nv"> </span><span class="s">python</span><span class="nv"> </span><span class="s">main.py</span><span class="nv"> </span><span class="s">--resume&quot;</span>
 <span class="nt">teardown</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
 <span class="w">  </span><span class="no"># Do any cleanup tasks here.</span>
 <span class="nt">sbatch_options</span><span class="p">:</span>
