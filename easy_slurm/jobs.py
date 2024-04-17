@@ -94,8 +94,9 @@ def submit_job(
     Returns:
         Path to the newly created job directory.
     """
-    job_name = sbatch_options.get("job-name", "untitled")
-    job_name = format_with_config(job_name, config)
+    job_name = format_with_config(
+        sbatch_options.get("job-name", "untitled"), config
+    )
     job_dir = _expand_path(
         format_with_config(job_dir, {**config, "job_name": job_name})
     )

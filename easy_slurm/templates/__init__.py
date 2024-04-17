@@ -1,5 +1,12 @@
 import os as _os
 
+_dir_path = _os.path.dirname(_os.path.realpath(__file__))
+
+
+def _read_template(filename: str, dir_path: str = _dir_path) -> str:
+    with open(_os.path.join(dir_path, filename)) as f:
+        return _format_template(f.read())
+
 
 def _format_template(s: str) -> str:
     return (
@@ -13,17 +20,9 @@ def _format_template(s: str) -> str:
     )
 
 
-_dir_path = _os.path.dirname(_os.path.realpath(__file__))
+JOB_SCRIPT_TEMPLATE = _read_template("job.sh")
 
-with open(_os.path.join(_dir_path, "job.sh")) as _f:
-    JOB_SCRIPT_TEMPLATE = _f.read()
-
-JOB_SCRIPT_TEMPLATE = _format_template(JOB_SCRIPT_TEMPLATE)
-
-with open(_os.path.join(_dir_path, "job_interactive.sh")) as _f:
-    JOB_INTERACTIVE_TEMPLATE = _f.read()
-
-JOB_INTERACTIVE_TEMPLATE = _format_template(JOB_INTERACTIVE_TEMPLATE)
+JOB_INTERACTIVE_TEMPLATE = _read_template("job_interactive.sh")
 
 VARS_TEMPLATE = r"""
 EASY_SLURM_VERSION={easy_slurm_version}
