@@ -176,7 +176,7 @@ def create_job_interactive_script_source(
     job_path = _expand_path(job_path)
 
     return JOB_INTERACTIVE_TEMPLATE.format(
-        sbatch_options_str=_sbatch_options_to_str(
+        sbatch_options_str=_sbatch_options_to_str_interactive(
             sbatch_options, job_dir, cleanup_seconds
         ),
         job_path=job_path,
@@ -205,7 +205,7 @@ def submit_job_dir(job_dir: str, interactive: bool):
     """
     if interactive:
         job_interactive_path = f"{job_dir}/job_interactive.sh"
-        cmd = ["srun", "--pty", "bash", "--init-file", job_interactive_path]
+        cmd = [job_interactive_path]
         subprocess.run(cmd, check=True, text=True)
         return
 
@@ -256,6 +256,16 @@ def _sbatch_options_to_str(
         "signal": f"B:USR1@{cleanup_seconds}",  # send USR1 to Bash before job end time
     }
     return "\n".join(f"#SBATCH --{k}={v}" for k, v in sbatch_options.items())
+
+
+def _sbatch_options_to_str_interactive(
+    sbatch_options: dict[str, Any], job_dir: str, cleanup_seconds: int
+) -> str:
+    sbatch_options = {
+        **sbatch_options,
+        "signal": f":USR1@{cleanup_seconds}",  # send USR1 to Bash before job end time
+    }
+    return "\n".join(f"  --{k}={v}" for k, v in sbatch_options.items())
 
 
 def _quote_single_quotes(s: str) -> str:
