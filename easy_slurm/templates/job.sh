@@ -113,6 +113,12 @@ run() {
   wait
 }
 
+run_interactive() {
+  status_write "interacting"
+  begin_func "run_interactive" "$SLURM_TMPDIR"
+  trap finalize EXIT
+}
+
 resubmit_job() {
   local RESULT="$(sbatch "$JOB_DIR/job.sh")"
   local JOB_ID="$(sed 's/^Submitted batch job \([0-9]\+\)$/\1/' <<< "$RESULT")"
@@ -149,8 +155,7 @@ main() {
   parse_args "$@"
   initialize
   if [ "$IS_INTERACTIVE" = true ]; then
-    status_write "interacting"
-    trap finalize EXIT
+    run_interactive
   else
     run
     finalize
