@@ -310,8 +310,9 @@ title="Source repository"
 <span class="sd">    Returns:</span>
 <span class="sd">        Path to the newly created job directory.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">job_name</span> <span class="o">=</span> <span class="n">sbatch_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;job-name&quot;</span><span class="p">,</span> <span class="s2">&quot;untitled&quot;</span><span class="p">)</span>
-    <span class="n">job_name</span> <span class="o">=</span> <span class="n">format_with_config</span><span class="p">(</span><span class="n">job_name</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
+    <span class="n">job_name</span> <span class="o">=</span> <span class="n">format_with_config</span><span class="p">(</span>
+        <span class="n">sbatch_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;job-name&quot;</span><span class="p">,</span> <span class="s2">&quot;untitled&quot;</span><span class="p">),</span> <span class="n">config</span>
+    <span class="p">)</span>
     <span class="n">job_dir</span> <span class="o">=</span> <span class="n">_expand_path</span><span class="p">(</span>
         <span class="n">format_with_config</span><span class="p">(</span><span class="n">job_dir</span><span class="p">,</span> <span class="p">{</span><span class="o">**</span><span class="n">config</span><span class="p">,</span> <span class="s2">&quot;job_name&quot;</span><span class="p">:</span> <span class="n">job_name</span><span class="p">})</span>
     <span class="p">)</span>
@@ -391,7 +392,7 @@ title="Source repository"
     <span class="n">job_path</span> <span class="o">=</span> <span class="n">_expand_path</span><span class="p">(</span><span class="n">job_path</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">JOB_INTERACTIVE_TEMPLATE</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-        <span class="n">sbatch_options_str</span><span class="o">=</span><span class="n">_sbatch_options_to_str</span><span class="p">(</span>
+        <span class="n">sbatch_options_str</span><span class="o">=</span><span class="n">_sbatch_options_to_str_interactive</span><span class="p">(</span>
             <span class="n">sbatch_options</span><span class="p">,</span> <span class="n">job_dir</span><span class="p">,</span> <span class="n">cleanup_seconds</span>
         <span class="p">),</span>
         <span class="n">job_path</span><span class="o">=</span><span class="n">job_path</span><span class="p">,</span>
@@ -420,7 +421,7 @@ title="Source repository"
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">interactive</span><span class="p">:</span>
         <span class="n">job_interactive_path</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">job_dir</span><span class="si">}</span><span class="s2">/job_interactive.sh&quot;</span>
-        <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;srun&quot;</span><span class="p">,</span> <span class="s2">&quot;--pty&quot;</span><span class="p">,</span> <span class="s2">&quot;bash&quot;</span><span class="p">,</span> <span class="s2">&quot;--init-file&quot;</span><span class="p">,</span> <span class="n">job_interactive_path</span><span class="p">]</span>
+        <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span><span class="n">job_interactive_path</span><span class="p">]</span>
         <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">return</span>
 
@@ -471,6 +472,16 @@ title="Source repository"
         <span class="s2">&quot;signal&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;B:USR1@</span><span class="si">{</span><span class="n">cleanup_seconds</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>  <span class="c1"># send USR1 to Bash before job end time</span>
     <span class="p">}</span>
     <span class="k">return</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;#SBATCH --</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">sbatch_options</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
+
+
+<span class="k">def</span> <span class="nf">_sbatch_options_to_str_interactive</span><span class="p">(</span>
+    <span class="n">sbatch_options</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">job_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">cleanup_seconds</span><span class="p">:</span> <span class="nb">int</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="n">sbatch_options</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="o">**</span><span class="n">sbatch_options</span><span class="p">,</span>
+        <span class="s2">&quot;signal&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;:USR1@</span><span class="si">{</span><span class="n">cleanup_seconds</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>  <span class="c1"># send USR1 to Bash before job end time</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  --</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">sbatch_options</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
 
 
 <span class="k">def</span> <span class="nf">_quote_single_quotes</span><span class="p">(</span><span class="n">s</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
